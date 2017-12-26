@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using productionorderservice.Data;
+using productionorderservice.Services;
+using productionorderservice.Services.Interfaces;
 
 namespace productionorderservice
 {
@@ -33,6 +35,8 @@ namespace productionorderservice
                           .AllowAnyMethod()
                           .AllowAnyHeader();
                }));
+            services.AddSingleton<IRecipePhaseService, RecipePhaseService>();
+            services.AddSingleton<IRecipeService, RecipeService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ProductionOrderDb")));
             services.AddResponseCaching();
