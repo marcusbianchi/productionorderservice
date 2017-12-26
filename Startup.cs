@@ -39,10 +39,12 @@ namespace productionorderservice
             services.AddSingleton<IRecipeService, RecipeService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ProductionOrderDb")));
+            services.AddTransient<IProductionOrderTypeService, ProductionOrderTypeService>();
+
             services.AddResponseCaching();
             services.AddMvc((options) =>
             {
-                options.CacheProfiles.Add("recipecache", new CacheProfile()
+                options.CacheProfiles.Add("productionordercache", new CacheProfile()
                 {
                     Duration = Convert.ToInt32(Configuration["CacheDuration"]),
                     Location = ResponseCacheLocation.Any

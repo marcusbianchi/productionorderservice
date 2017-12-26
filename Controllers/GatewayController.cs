@@ -43,7 +43,6 @@ namespace productionorderservice.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetRecipe(int id)
         {
-
             var recipe = await _recipeService.getRecipe(id);
             return Ok(recipe);
         }

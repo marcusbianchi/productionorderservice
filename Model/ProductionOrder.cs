@@ -13,5 +13,6 @@ namespace productionorderservice.Model
         public string productionOrderNumber { get; set; }
         [Required]
         public ProductionOrderType productionOrderType { get; set; }
+
     }
 }
