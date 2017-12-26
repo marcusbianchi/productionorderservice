@@ -40,6 +40,7 @@ namespace productionorderservice
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ProductionOrderDb")));
             services.AddTransient<IProductionOrderTypeService, ProductionOrderTypeService>();
+            services.AddTransient<IProductionOrderService, ProductionOrderService>();
 
             services.AddResponseCaching();
             services.AddMvc((options) =>

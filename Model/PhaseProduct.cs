@@ -14,6 +14,10 @@ namespace productionorderservice.Model
     }
     public class PhaseProduct
     {
+        [Key]
+        [JsonIgnore]
+        public int internalId { get; set; }
+        [Required]
         public int phaseProductId { get; set; }
         [Required]
         public int productId { get; set; }
@@ -26,7 +30,6 @@ namespace productionorderservice.Model
         [Required]
         [JsonConverter(typeof(StringEnumConverter))]
         public PhaseProductType phaseProductType { get; set; }
-        [NotMapped]
         public Product product { get; set; }
     }
 }

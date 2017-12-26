@@ -1,10 +1,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace productionorderservice.Model
 {
     public class Phase
     {
+        [Key]
+        [JsonIgnore]
+        public int internalId { get; set; }
         public int phaseId { get; set; }
         [Required]
         [MaxLength(50)]

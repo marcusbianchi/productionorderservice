@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace productionorderservice.Model
 {
     public class Product
     {
+        [Key]
+        [JsonIgnore]
+        public int internalId { get; set; }
         public int productId { get; set; }
-        public int[] parentProductsIds { get; set; }
         [Required]
         [MaxLength(50)]
         public string productName { get; set; }
@@ -17,8 +20,6 @@ namespace productionorderservice.Model
         public string productCode { get; set; }
         [MaxLength(50)]
         public string productGTIN { get; set; }
-        [DefaultValue(true)]
-        public bool enabled { get; set; }
         public ICollection<AdditionalInformation> additionalInformation { get; set; }
     }
 }

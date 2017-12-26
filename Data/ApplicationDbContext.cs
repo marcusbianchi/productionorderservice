@@ -23,7 +23,8 @@ namespace productionorderservice.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            modelBuilder.Entity<ProductionOrder>()
+                .HasIndex(b => b.productionOrderNumber);
         }
     }
 }

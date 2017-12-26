@@ -21,23 +21,31 @@ namespace productionorderservice.Services
         }
         public async Task<List<Phase>> getPhasesFromRecipe(int recipeId)
         {
-            List<Phase> returnPhases = null;
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var builder = new UriBuilder(_configuration["recipeServiceEndpoint"] + "/api/recipes/phases/" + recipeId);
-            string url = builder.ToString();
-            var result = await client.GetAsync(url);
-            switch (result.StatusCode)
+            try
             {
-                case HttpStatusCode.OK:
-                    returnPhases = JsonConvert.DeserializeObject<List<Phase>>(await client.GetStringAsync(url));
-                    return returnPhases;
-                case HttpStatusCode.NotFound:
-                    return returnPhases;
-                case HttpStatusCode.InternalServerError:
-                    return returnPhases;
+                List<Phase> returnPhases = null;
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var builder = new UriBuilder(_configuration["recipeServiceEndpoint"] + "/api/recipes/phases/" + recipeId);
+                string url = builder.ToString();
+                var result = await client.GetAsync(url);
+                switch (result.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        returnPhases = JsonConvert.DeserializeObject<List<Phase>>(await client.GetStringAsync(url));
+                        return returnPhases;
+                    case HttpStatusCode.NotFound:
+                        return returnPhases;
+                    case HttpStatusCode.InternalServerError:
+                        return returnPhases;
+                }
+                return returnPhases;
             }
-            return returnPhases;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
         }
     }
 }

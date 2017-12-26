@@ -16,12 +16,12 @@ using productionorderservice.Services.Interfaces;
 namespace productionorderservice.Controllers
 {
     [Route("api/[controller]")]
-    public class ProductionOrderTypesController : Controller
+    public class ProductionOrdersController : Controller
     {
-        private readonly IProductionOrderTypeService _productionOrderTypeService;
-        public ProductionOrderTypesController(IProductionOrderTypeService productionOrderTypeService)
+        private readonly IProductionOrderService _productionOrderService;
+        public ProductionOrdersController(IProductionOrderService productionOrderService)
         {
-            _productionOrderTypeService = productionOrderTypeService;
+            _productionOrderService = productionOrderService;
         }
 
         [HttpGet]
@@ -30,41 +30,39 @@ namespace productionorderservice.Controllers
         {
             if (quantity == 0)
                 quantity = 50;
-            var productionOrderTypes = await _productionOrderTypeService.getProductionOrderTypes(startat, quantity);
-            return Ok(productionOrderTypes);
+            var productionOrders = await _productionOrderService.getProductionOrders(startat, quantity);
+            return Ok(productionOrders);
         }
-
 
         [HttpGet("{id}")]
         [ResponseCache(CacheProfileName = "productionordercache")]
         public async Task<IActionResult> Get(int id)
         {
-            var productionOrderType = await _productionOrderTypeService.getProductionOrderType(id);
-            if (productionOrderType == null)
+            var productionOrder = await _productionOrderService.getProductionOrder(id);
+            if (productionOrder == null)
                 return NotFound();
-            return Ok(productionOrderType);
+            return Ok(productionOrder);
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]ProductionOrderType productionOrderType)
+        public async Task<IActionResult> Post([FromBody]ProductionOrder productionOrder)
         {
-            productionOrderType.productionOrderTypeId = 0;
+            productionOrder.productionOrderId = 0;
             if (ModelState.IsValid)
             {
-                productionOrderType = await _productionOrderTypeService.addProductionOrderType(productionOrderType);
-                return Created($"api/phases/{productionOrderType.productionOrderTypeId}", productionOrderType);
+                productionOrder = await _productionOrderService.addProductionOrder(productionOrder);
+                return Created($"api/phases/{productionOrder.productionOrderId}", productionOrder);
             }
             return BadRequest(ModelState);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody]ProductionOrderType productionOrderType)
+        public async Task<IActionResult> Put(int id, [FromBody]ProductionOrder productionOrder)
         {
             if (ModelState.IsValid)
             {
-                productionOrderType = await _productionOrderTypeService.updateProductionOrderType(id, productionOrderType);
-                if (productionOrderType != null)
+                productionOrder = await _productionOrderService.updateProductionOrder(id, productionOrder);
+                if (productionOrder != null)
                 {
                     return NoContent();
                 }
@@ -78,8 +76,8 @@ namespace productionorderservice.Controllers
         {
             if (ModelState.IsValid)
             {
-                var productionOrderType = await _productionOrderTypeService.deleteProductionOrderType(id);
-                if (productionOrderType != null)
+                var productionOrder = await _productionOrderService.deleteProductionOrder(id);
+                if (productionOrder != null)
                 {
                     return NoContent();
                 }
@@ -87,6 +85,5 @@ namespace productionorderservice.Controllers
             }
             return BadRequest(ModelState);
         }
-
     }
 }
