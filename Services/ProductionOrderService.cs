@@ -14,32 +14,34 @@ namespace productionorderservice.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IRecipeService _recipeService;
-        public ProductionOrderService(ApplicationDbContext context, IRecipeService recipeService)
+        private readonly IProductionOrderTypeService _productionOrderTypeService;
+        public ProductionOrderService(ApplicationDbContext context, IRecipeService recipeService, IProductionOrderTypeService productionOrderTypeService)
         {
             _context = context;
             _recipeService = recipeService;
+            _productionOrderTypeService = productionOrderTypeService;
         }
 
         public async Task<ProductionOrder> addProductionOrder(ProductionOrder productionOrder)
         {
             var recipe = await _recipeService.getRecipe(productionOrder.recipe.recipeId);
+
             productionOrder.recipe = recipe;
             _context.ProductionOrders.Add(productionOrder);
             await _context.SaveChangesAsync();
             return productionOrder;
         }
 
-        public async Task<ProductionOrder> deleteProductionOrder(int productionOrderId)
+        public async Task<bool> checkProductionOrderNumber(string productionOrderNumber)
         {
-            var productionOrder = await _context.ProductionOrders
-                               .Where(x => x.productionOrderId == productionOrderId)
-                               .FirstOrDefaultAsync();
-            if (productionOrder != null)
-            {
-                _context.Entry(productionOrder).State = EntityState.Deleted;
-                await _context.SaveChangesAsync();
-            }
-            return productionOrder;
+            var productionOrderCount = await _context.ProductionOrders.Where(x => x.productionOrderNumber == productionOrderNumber).CountAsync();
+            return productionOrderCount != 0;
+        }
+
+        public async Task<bool> checkProductionOrderType(int productionOrderTypeId)
+        {
+            var productionOrdertype = await _productionOrderTypeService.getProductionOrderType(productionOrderTypeId);
+            return productionOrdertype != null;
         }
 
         public async Task<ProductionOrder> getProductionOrder(int productionOrderId)
@@ -55,6 +57,10 @@ namespace productionorderservice.Services
                                         .Where(x => x.productionOrderId == productionOrderId)
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync();
+            var productionOrderType = await _productionOrderTypeService.getProductionOrderType(productionOrder.productionOrderTypeId.Value);
+            if (productionOrderType != null)
+                productionOrder.typeDescription = productionOrderType.typeDescription;
+
             return productionOrder;
         }
 
@@ -62,25 +68,17 @@ namespace productionorderservice.Services
         {
             var productionOrders = await _context.ProductionOrders
                                             .OrderBy(x => x.productionOrderId)
-                                            .Include(x => x.recipe)
-                                            .Include(x => x.recipe.phases)
-                                            .Include(x => x.recipe.recipeProduct)
                                             .Skip(startat).Take(quantity)
                                             .ToListAsync();
-            return productionOrders;
+            List<ProductionOrder> result = new List<ProductionOrder>();
+            foreach (var item in productionOrders)
+            {
+                result.Add(await getProductionOrder(item.productionOrderId));
+            }
+
+            return result;
         }
 
-        public async Task<ProductionOrder> updateProductionOrder(int productionOrderId, ProductionOrder productionOrder)
-        {
-            var curProductionOrder = await getProductionOrder(productionOrderId);
-            if (productionOrderId != productionOrder.productionOrderId || curProductionOrder == null)
-            {
-                return null;
-            }
-            productionOrder.recipe = curProductionOrder.recipe;
-            _context.ProductionOrders.Update(productionOrder);
-            await _context.SaveChangesAsync();
-            return productionOrder;
-        }
+
     }
 }

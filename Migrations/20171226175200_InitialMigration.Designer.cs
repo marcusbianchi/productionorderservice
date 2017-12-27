@@ -12,7 +12,7 @@ using System;
 namespace productionorderservice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171226171503_InitialMigration")]
+    [Migration("20171226175200_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,8 +84,6 @@ namespace productionorderservice.Migrations
                     b.Property<string>("minValue")
                         .HasMaxLength(50);
 
-                    b.Property<int>("phaseParameterId");
-
                     b.Property<string>("setupValue")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -124,6 +122,8 @@ namespace productionorderservice.Migrations
 
                     b.HasIndex("PhaseinternalId");
 
+                    b.HasIndex("productId");
+
                     b.ToTable("PhaseProducts");
                 });
 
@@ -131,10 +131,6 @@ namespace productionorderservice.Migrations
                 {
                     b.Property<int>("internalId")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("enabled");
-
-                    b.Property<int[]>("parentProductsIds");
 
                     b.Property<string>("productCode")
                         .HasMaxLength(50);
@@ -282,6 +278,11 @@ namespace productionorderservice.Migrations
                     b.HasOne("productionorderservice.Model.Phase")
                         .WithMany("phaseProducts")
                         .HasForeignKey("PhaseinternalId");
+
+                    b.HasOne("productionorderservice.Model.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("productId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("productionorderservice.Model.ProductionOrder", b =>

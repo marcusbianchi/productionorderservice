@@ -9,8 +9,9 @@ namespace productionorderservice.Services.Interfaces
         Task<List<ProductionOrder>> getProductionOrders(int startat, int quantity);
         Task<ProductionOrder> getProductionOrder(int productionOrderId);
         Task<ProductionOrder> addProductionOrder(ProductionOrder productionOrder);
-        Task<ProductionOrder> updateProductionOrder(int productionOrderId, ProductionOrder productionOrder);
-        Task<ProductionOrder> deleteProductionOrder(int productionOrderId);
+        Task<bool> checkProductionOrderNumber(string productionOrderNumber);
+        Task<bool> checkProductionOrderType(int productionOrderTypeId);
+
 
     }
 }

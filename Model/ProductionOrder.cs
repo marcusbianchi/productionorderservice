@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace productionorderservice.Model
 {
@@ -7,14 +8,15 @@ namespace productionorderservice.Model
     {
         public int productionOrderId { get; set; }
         [Required]
-
         public Recipe recipe { get; set; }
         [Required]
         [MaxLength(50)]
         public string productionOrderNumber { get; set; }
         [Required]
-        public int productionOrderTypeId { get; set; }
-        public int quantity { get; set; }
+        public int? productionOrderTypeId { get; set; }
+        [NotMapped]
+        public string typeDescription { get; set; }
+        public int? quantity { get; set; }
 
     }
 }

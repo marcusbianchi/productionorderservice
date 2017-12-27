@@ -50,40 +50,27 @@ namespace productionorderservice.Controllers
             productionOrder.productionOrderId = 0;
             if (ModelState.IsValid)
             {
+                bool pOExists = await _productionOrderService.checkProductionOrderNumber(productionOrder.productionOrderNumber);
+                if (pOExists)
+                {
+                    ModelState.AddModelError("productionOrderNumber", "This Production Order Number already exists.");
+                    return BadRequest(ModelState);
+                }
+                bool pOTypeExists = await _productionOrderService.checkProductionOrderType(productionOrder.productionOrderTypeId.Value);
+                if (!pOTypeExists)
+                {
+                    ModelState.AddModelError("productionOrderTypeId", "This Production Order Type Doesn't exists.");
+                    return BadRequest(ModelState);
+                }
+
                 productionOrder = await _productionOrderService.addProductionOrder(productionOrder);
                 return Created($"api/phases/{productionOrder.productionOrderId}", productionOrder);
             }
             return BadRequest(ModelState);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody]ProductionOrder productionOrder)
-        {
-            if (ModelState.IsValid)
-            {
-                productionOrder = await _productionOrderService.updateProductionOrder(id, productionOrder);
-                if (productionOrder != null)
-                {
-                    return NoContent();
-                }
-                return NotFound();
-            }
-            return BadRequest(ModelState);
-        }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            if (ModelState.IsValid)
-            {
-                var productionOrder = await _productionOrderService.deleteProductionOrder(id);
-                if (productionOrder != null)
-                {
-                    return NoContent();
-                }
-                return NotFound();
-            }
-            return BadRequest(ModelState);
-        }
+
+
     }
 }
