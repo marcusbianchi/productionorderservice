@@ -110,3 +110,17 @@ These are the fields of the Production Order and it's constrains:
 * api/productionorders/{id}
 
   * Get: Return Production Order with productionOrderId = ID
+
+# GatewayAPI
+
+API Responsible to provide access to information nedeed to compose the production order from other APIs
+
+## URLs
+
+* gateway/recipes/
+
+  * Get: Return List of recipes
+
+* gateway/recipes/{id}
+
+  * Get: Return Recipe with recipeId = ID
