@@ -9,7 +9,6 @@ namespace productionorderservice.Model
         [Key]
         [JsonIgnore]
         public int internalId { get; set; }
-        public int tagId { get; set; }
         [Required]
         [MaxLength(50)]
         public string setupValue { get; set; }

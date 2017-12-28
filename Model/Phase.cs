@@ -9,7 +9,6 @@ namespace productionorderservice.Model
         [Key]
         [JsonIgnore]
         public int internalId { get; set; }
-        public int phaseId { get; set; }
         [Required]
         [MaxLength(50)]
         public string phaseName { get; set; }

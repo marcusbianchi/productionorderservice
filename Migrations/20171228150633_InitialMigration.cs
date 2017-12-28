@@ -24,23 +24,6 @@ namespace productionorderservice.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    internalId = table.Column<int>(type: "int4", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    productCode = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    productDescription = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
-                    productGTIN = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    productId = table.Column<int>(type: "int4", nullable: false),
-                    productName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.internalId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ThingGroups",
                 columns: table => new
                 {
@@ -53,28 +36,6 @@ namespace productionorderservice.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ThingGroups", x => x.internalId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AdditionalInformations",
-                columns: table => new
-                {
-                    internalId = table.Column<int>(type: "int4", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Information = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    ProductinternalId = table.Column<int>(type: "int4", nullable: true),
-                    Value = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    additionalInformationId = table.Column<int>(type: "int4", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdditionalInformations", x => x.internalId);
-                    table.ForeignKey(
-                        name: "FK_AdditionalInformations_Products_ProductinternalId",
-                        column: x => x.ProductinternalId,
-                        principalTable: "Products",
-                        principalColumn: "internalId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,6 +58,44 @@ namespace productionorderservice.Migrations
                         principalTable: "ThingGroups",
                         principalColumn: "internalId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    internalId = table.Column<int>(type: "int4", nullable: false),
+                    productCode = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    productDescription = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
+                    productGTIN = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    productId = table.Column<int>(type: "int4", nullable: false),
+                    productName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.internalId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AdditionalInformations",
+                columns: table => new
+                {
+                    internalId = table.Column<int>(type: "int4", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Information = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    ProductinternalId = table.Column<int>(type: "int4", nullable: true),
+                    Value = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
+                    additionalInformationId = table.Column<int>(type: "int4", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdditionalInformations", x => x.internalId);
+                    table.ForeignKey(
+                        name: "FK_AdditionalInformations_Products_ProductinternalId",
+                        column: x => x.ProductinternalId,
+                        principalTable: "Products",
+                        principalColumn: "internalId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,7 +122,6 @@ namespace productionorderservice.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     RecipeinternalId = table.Column<int>(type: "int4", nullable: true),
                     phaseCode = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
-                    phaseId = table.Column<int>(type: "int4", nullable: false),
                     phaseName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -145,7 +143,7 @@ namespace productionorderservice.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     productionOrderNumber = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     productionOrderTypeId = table.Column<int>(type: "int4", nullable: false),
-                    quantity = table.Column<int>(type: "int4", nullable: false),
+                    quantity = table.Column<int>(type: "int4", nullable: true),
                     recipeinternalId = table.Column<int>(type: "int4", nullable: false)
                 },
                 constraints: table =>
@@ -169,8 +167,7 @@ namespace productionorderservice.Migrations
                     maxValue = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
                     measurementUnit = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     minValue = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true),
-                    setupValue = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    tagId = table.Column<int>(type: "int4", nullable: false)
+                    setupValue = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,9 +188,7 @@ namespace productionorderservice.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     PhaseinternalId = table.Column<int>(type: "int4", nullable: true),
                     measurementUnit = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    phaseProductId = table.Column<int>(type: "int4", nullable: false),
                     phaseProductType = table.Column<int>(type: "int4", nullable: false),
-                    productId = table.Column<int>(type: "int4", nullable: false),
                     value = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -205,12 +200,6 @@ namespace productionorderservice.Migrations
                         principalTable: "Phases",
                         principalColumn: "internalId",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PhaseProducts_Products_productId",
-                        column: x => x.productId,
-                        principalTable: "Products",
-                        principalColumn: "internalId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -227,11 +216,6 @@ namespace productionorderservice.Migrations
                 name: "IX_PhaseProducts_PhaseinternalId",
                 table: "PhaseProducts",
                 column: "PhaseinternalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PhaseProducts_productId",
-                table: "PhaseProducts",
-                column: "productId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Phases_RecipeinternalId",
@@ -259,6 +243,14 @@ namespace productionorderservice.Migrations
                 column: "thingGroupId");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Products_PhaseProducts_internalId",
+                table: "Products",
+                column: "internalId",
+                principalTable: "PhaseProducts",
+                principalColumn: "internalId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Recipes_PhaseProducts_recipeProductinternalId",
                 table: "Recipes",
                 column: "recipeProductinternalId",
@@ -269,10 +261,6 @@ namespace productionorderservice.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_PhaseProducts_Products_productId",
-                table: "PhaseProducts");
-
             migrationBuilder.DropForeignKey(
                 name: "FK_PhaseProducts_Phases_PhaseinternalId",
                 table: "PhaseProducts");
@@ -293,10 +281,10 @@ namespace productionorderservice.Migrations
                 name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "ThingGroups");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ThingGroups");
 
             migrationBuilder.DropTable(
                 name: "Phases");

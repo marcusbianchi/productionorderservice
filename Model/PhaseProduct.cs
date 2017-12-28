@@ -18,10 +18,6 @@ namespace productionorderservice.Model
         [JsonIgnore]
         public int internalId { get; set; }
         [Required]
-        public int phaseProductId { get; set; }
-        [Required]
-        public int productId { get; set; }
-        [Required]
         [MaxLength(50)]
         public string value { get; set; }
         [Required]

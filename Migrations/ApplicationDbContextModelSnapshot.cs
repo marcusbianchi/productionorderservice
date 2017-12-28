@@ -53,8 +53,6 @@ namespace productionorderservice.Migrations
                     b.Property<string>("phaseCode")
                         .HasMaxLength(100);
 
-                    b.Property<int>("phaseId");
-
                     b.Property<string>("phaseName")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -87,8 +85,6 @@ namespace productionorderservice.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int>("tagId");
-
                     b.HasKey("internalId");
 
                     b.HasIndex("PhaseinternalId");
@@ -107,11 +103,7 @@ namespace productionorderservice.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int>("phaseProductId");
-
                     b.Property<int>("phaseProductType");
-
-                    b.Property<int>("productId");
 
                     b.Property<string>("value")
                         .IsRequired()
@@ -121,15 +113,12 @@ namespace productionorderservice.Migrations
 
                     b.HasIndex("PhaseinternalId");
 
-                    b.HasIndex("productId");
-
                     b.ToTable("PhaseProducts");
                 });
 
             modelBuilder.Entity("productionorderservice.Model.Product", b =>
                 {
-                    b.Property<int>("internalId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("internalId");
 
                     b.Property<string>("productCode")
                         .HasMaxLength(50);
@@ -160,9 +149,10 @@ namespace productionorderservice.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<int>("productionOrderTypeId");
+                    b.Property<int?>("productionOrderTypeId")
+                        .IsRequired();
 
-                    b.Property<int>("quantity");
+                    b.Property<int?>("quantity");
 
                     b.Property<int>("recipeinternalId");
 
@@ -277,10 +267,13 @@ namespace productionorderservice.Migrations
                     b.HasOne("productionorderservice.Model.Phase")
                         .WithMany("phaseProducts")
                         .HasForeignKey("PhaseinternalId");
+                });
 
-                    b.HasOne("productionorderservice.Model.Product", "product")
-                        .WithMany()
-                        .HasForeignKey("productId")
+            modelBuilder.Entity("productionorderservice.Model.Product", b =>
+                {
+                    b.HasOne("productionorderservice.Model.PhaseProduct")
+                        .WithOne("product")
+                        .HasForeignKey("productionorderservice.Model.Product", "internalId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
