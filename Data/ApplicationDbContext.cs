@@ -27,6 +27,9 @@ namespace productionorderservice.Data
         {
             modelBuilder.Entity<ProductionOrder>()
                 .HasIndex(b => b.productionOrderNumber);
+            modelBuilder.Entity<ProductionOrder>()
+            .Property(b => b.currentStatus)
+            .HasDefaultValue("created");
         }
     }
 }

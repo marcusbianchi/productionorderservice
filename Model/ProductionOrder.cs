@@ -18,5 +18,7 @@ namespace productionorderservice.Model
         public string typeDescription { get; set; }
         public int? quantity { get; set; }
 
+        public string currentStatus { get; set; }
+
     }
 }

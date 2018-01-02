@@ -170,3 +170,21 @@ These are the fields of the StateConfiguration and it's constrains:
   * Get: Return state configuration of the Production Order Type where productionOrderTypeId=productionOrderTypeId
   * Put: Update the configuration of the Production Order Type where productionOrderTypeId=productionOrderTypeId
     * Body: StateConfiguration JSON
+
+# StateManagementAPI
+
+API to Manage the current state of a production order on Lorien. Used to update the status of the production order.
+
+## URLs
+
+* /api/productionorders/statemanagement/number{productionordernumber}{state}
+
+  * Put: Update the configuration of the Production Order Type where productionordernumber=productionordernumber to the Status = State (Valid States: created, active, inactive, paused, ended, waiting_approval, approved, reproved)
+
+* /api/productionorders/statemanagement/id{productionorderid}{state}
+
+  * Put: Update the configuration of the Production Order Type where productionorderid=productionorderid to the Status = State (Valid States: created, active, inactive, paused, ended, waiting_approval, approved, reproved)
+
+## After Status Change Post
+
+This API can send the Data to a Endpoint if the configuration in present. The API will send a production order JSON to the configured endpoint.
