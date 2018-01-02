@@ -37,8 +37,11 @@ namespace productionorderservice
                }));
             services.AddSingleton<IRecipePhaseService, RecipePhaseService>();
             services.AddSingleton<IRecipeService, RecipeService>();
+
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ProductionOrderDb")));
+            services.AddTransient<IStateConfigurationService, StateConfigurationService>();
             services.AddTransient<IProductionOrderTypeService, ProductionOrderTypeService>();
             services.AddTransient<IProductionOrderService, ProductionOrderService>();
 

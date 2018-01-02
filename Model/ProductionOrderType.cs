@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using productionorderservice.Validation;
 
 namespace productionorderservice.Model
 {
@@ -12,5 +13,6 @@ namespace productionorderservice.Model
         [Required]
         [MaxLength(50)]
         public string typeScope { get; set; }
+        public StateConfiguration stateConfiguration { get; set; }
     }
 }

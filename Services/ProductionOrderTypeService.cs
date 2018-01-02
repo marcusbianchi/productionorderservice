@@ -30,6 +30,8 @@ namespace productionorderservice.Services
 
             var productionOrderType = await _context.ProductionOrderTypes
                     .Where(x => x.productionOrderTypeId == productionOrderTypeId)
+                    .Include(x => x.stateConfiguration)
+                    .ThenInclude(x => x.states)
                     .FirstOrDefaultAsync();
             if (productionOrderType != null)
             {
@@ -43,6 +45,8 @@ namespace productionorderservice.Services
         {
             var productionOrderType = await _context.ProductionOrderTypes
                              .Where(x => x.productionOrderTypeId == productionOrderTypeId)
+                                .Include(x => x.stateConfiguration)
+                                .ThenInclude(x => x.states)
                              .FirstOrDefaultAsync();
             return productionOrderType;
         }
@@ -52,6 +56,8 @@ namespace productionorderservice.Services
             var productionOrderTypes = await _context.ProductionOrderTypes
                                 .OrderBy(x => x.productionOrderTypeId)
                                 .Skip(startat).Take(quantity)
+                                .Include(x => x.stateConfiguration)
+                                .ThenInclude(x => x.states)
                                 .ToListAsync();
             return productionOrderTypes;
         }

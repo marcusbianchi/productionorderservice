@@ -124,3 +124,49 @@ API Responsible to provide access to information nedeed to compose the productio
 * gateway/recipes/{id}
 
   * Get: Return Recipe with recipeId = ID
+
+# StateConfigurationAPI
+
+API to Manage The possible states for Order Types on Lorien. Used to update and read the state configuration of a production Order Type.
+
+## StateConfiguration Data Format
+
+These are the fields of the StateConfiguration and it's constrains:
+
+* productionOrderTypeId: Id of the Production Order Type of which this configuration belongs to.
+  * Integer
+  * Ignored on Create, mandatory on the other methods
+* states: possible states of this production order type.
+  * Array State objects
+* state: Value of the current state
+  * Enum
+  * Possible Values: created, active, inactive, paused, ended, waiting_approval, approved, reproved
+* possibleNextStates: possible values after the current one
+  * List Enum
+  * Possible Values: created, active, inactive, paused, ended, waiting_approval, approved, reproved
+
+### JSON Example:
+
+```json
+{
+  "productionOrderTypeId": 2,
+  "states": [
+    {
+      "state": "created",
+      "possibleNextStates": ["inactive", "waiting_approval"]
+    },
+    {
+      "state": "waiting_approval",
+      "possibleNextStates": ["approved", "reproved"]
+    }
+  ]
+}
+```
+
+## URLs
+
+* api/stateconfiguration/{productionOrderTypeId}
+
+  * Get: Return state configuration of the Production Order Type where productionOrderTypeId=productionOrderTypeId
+  * Put: Update the configuration of the Production Order Type where productionOrderTypeId=productionOrderTypeId
+    * Body: StateConfiguration JSON

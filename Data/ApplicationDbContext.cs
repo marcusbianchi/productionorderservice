@@ -16,6 +16,8 @@ namespace productionorderservice.Data
         public DbSet<AdditionalInformation> AdditionalInformations { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductionOrder> ProductionOrders { get; set; }
+        public DbSet<StateConfiguration> StateConfigurations { get; set; }
+        public DbSet<ConfiguredState> ConfiguredStates { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
