@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using productionorderservice.Model;
 using productionorderservice.Services.Interfaces;
 
@@ -81,7 +82,10 @@ namespace productionorderservice.Services
                 switch (result.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        returnRecipes = JsonConvert.DeserializeObject<List<Recipe>>(await client.GetStringAsync(url));
+                        string returnJson = (await client.GetStringAsync(url));
+                        var returnTagString = JObject.Parse(returnJson)["values"];
+                        string recipes = returnTagString.ToString();
+                        returnRecipes = JsonConvert.DeserializeObject<List<Recipe>>(recipes);
                         foreach (var returnRecipe in returnRecipes)
                         {
                             returnRecipe.phases = await _recipePhaseService.getPhasesFromRecipe(returnRecipe.recipeId);
