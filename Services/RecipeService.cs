@@ -53,7 +53,8 @@ namespace productionorderservice.Services
             }
         }
 
-        public async Task<List<Recipe>> getRecipes(int startat, int quantity)
+        public async Task<List<Recipe>> getRecipes(int startat, int quantity,
+                string fieldFilter, string fieldValue, string orderField, string order)
         {
             try
             {
@@ -66,6 +67,14 @@ namespace productionorderservice.Services
                     query["startat"] = startat.ToString();
                 if (quantity != 0)
                     query["quantity"] = quantity.ToString();
+                if (!string.IsNullOrEmpty(fieldFilter))
+                    query["fieldFilter"] = fieldFilter;
+                if (!string.IsNullOrEmpty(fieldValue))
+                    query["fieldValue"] = fieldValue;
+                if (!string.IsNullOrEmpty(orderField))
+                    query["orderField"] = orderField;
+                if (!string.IsNullOrEmpty(order))
+                    query["order"] = order;
                 builder.Query = query.ToString();
                 string url = builder.ToString();
                 var result = await client.GetAsync(url);

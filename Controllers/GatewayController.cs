@@ -31,10 +31,12 @@ namespace productionorderservice.Controllers
 
         [HttpGet("gateway/recipes/")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetRecipes([FromQuery]int startat, [FromQuery]int quantity)
+        public async Task<IActionResult> GetRecipes([FromQuery]int startat, [FromQuery]int quantity,
+        [FromQuery]string fieldFilter, [FromQuery]string fieldValue, [FromQuery]string orderField, [FromQuery] string order)
         {
 
-            var recipes = await _recipeService.getRecipes(startat, quantity);
+            var recipes = await _recipeService.getRecipes(startat, quantity, fieldFilter,
+        fieldValue, orderField, order);
             return Ok(recipes);
         }
 
