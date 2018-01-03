@@ -26,12 +26,21 @@ namespace productionorderservice.Controllers
 
         [HttpGet]
         [ResponseCache(CacheProfileName = "productionordercache")]
-        public async Task<IActionResult> Get([FromQuery]int startat, [FromQuery]int quantity)
+        public async Task<IActionResult> Get([FromQuery]int startat, [FromQuery]int quantity,
+            [FromQuery]string fieldFilter, [FromQuery]string fieldValue,
+            [FromQuery]string orderField, [FromQuery]string order)
         {
+            var fieldFilterEnum = ProductionOrderFields.Default;
+            Enum.TryParse(fieldFilter, true, out fieldFilterEnum);
+            var orderFieldEnum = ProductionOrderFields.Default;
+            Enum.TryParse(orderField, true, out orderFieldEnum);
+            var orderEnumValue = OrderEnum.Ascending;
+            Enum.TryParse(order, true, out orderEnumValue);
             if (quantity == 0)
                 quantity = 50;
-            var productionOrders = await _productionOrderService.getProductionOrders(startat, quantity);
-            return Ok(productionOrders);
+            var (productionOrders, total) = await _productionOrderService.getProductionOrders(startat, quantity,
+            fieldFilterEnum, fieldValue, orderFieldEnum, orderEnumValue); ;
+            return Ok(new { values = productionOrders, total = total });
         }
 
         [HttpGet("{id}")]
@@ -64,6 +73,8 @@ namespace productionorderservice.Controllers
                 }
 
                 productionOrder = await _productionOrderService.addProductionOrder(productionOrder);
+                if (productionOrder == null)
+                    return BadRequest();
                 return Created($"api/phases/{productionOrder.productionOrderId}", productionOrder);
             }
             return BadRequest(ModelState);

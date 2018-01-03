@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using productionorderservice.Data;
 using productionorderservice.Model;
 using productionorderservice.Services.Interfaces;
+using productionorderservice.Validation;
 
 namespace productionorderservice.Services
 {
@@ -25,8 +26,10 @@ namespace productionorderservice.Services
         public async Task<ProductionOrder> addProductionOrder(ProductionOrder productionOrder)
         {
             var recipe = await _recipeService.getRecipe(productionOrder.recipe.recipeId);
-
+            if (recipe == null)
+                return null;
             productionOrder.recipe = recipe;
+            productionOrder.currentStatus = null;
             _context.ProductionOrders.Add(productionOrder);
             await _context.SaveChangesAsync();
             return productionOrder;
@@ -64,20 +67,70 @@ namespace productionorderservice.Services
             return productionOrder;
         }
 
-        public async Task<List<ProductionOrder>> getProductionOrders(int startat, int quantity)
+        public async Task<(List<ProductionOrder>, int)> getProductionOrders(int startat, int quantity
+        , ProductionOrderFields fieldFilter, string fieldValue,
+            ProductionOrderFields orderField, OrderEnum order)
         {
-            var productionOrders = await _context.ProductionOrders
-                                            .OrderBy(x => x.productionOrderId)
-                                            .Skip(startat).Take(quantity)
-                                            .ToListAsync();
+            var productionOrdersQuery = _context.ProductionOrders.Where(x => x.currentStatus != stateEnum.inactive.ToString());
+            productionOrdersQuery = ApplyFilter(productionOrdersQuery, fieldFilter, fieldValue);
+            productionOrdersQuery = ApplyOrder(productionOrdersQuery, orderField, order);
+
+            var productionOrders = await productionOrdersQuery.Skip(startat).Take(quantity)
+                                                        .ToListAsync();
+            var queryCount = _context.ProductionOrders.Where(x => x.currentStatus != stateEnum.inactive.ToString());
+            queryCount = ApplyFilter(queryCount, fieldFilter, fieldValue);
+            queryCount = ApplyOrder(queryCount, orderField, order);
+            var totalCount = queryCount.Count();
             List<ProductionOrder> result = new List<ProductionOrder>();
             foreach (var item in productionOrders)
             {
                 result.Add(await getProductionOrder(item.productionOrderId));
             }
 
-            return result;
+            return (result, totalCount);
         }
+
+        private IQueryable<ProductionOrder> ApplyFilter(IQueryable<ProductionOrder> queryProducts,
+        ProductionOrderFields fieldFilter, string fieldValue)
+        {
+            switch (fieldFilter)
+            {
+                case ProductionOrderFields.currentStatus:
+                    queryProducts = queryProducts.Where(x => x.currentStatus.Contains(fieldValue));
+                    break;
+                case ProductionOrderFields.productionOrderNumber:
+                    queryProducts = queryProducts.Where(x => x.productionOrderNumber.Contains(fieldValue));
+                    break;
+                default:
+                    break;
+            }
+            return queryProducts;
+        }
+
+        private IQueryable<ProductionOrder> ApplyOrder(IQueryable<ProductionOrder> queryProducts,
+        ProductionOrderFields orderField, OrderEnum order)
+        {
+            switch (orderField)
+            {
+                case ProductionOrderFields.currentStatus:
+                    if (order == OrderEnum.Ascending)
+                        queryProducts = queryProducts.OrderBy(x => x.currentStatus);
+                    else
+                        queryProducts = queryProducts.OrderByDescending(x => x.currentStatus);
+                    break;
+                case ProductionOrderFields.productionOrderNumber:
+                    if (order == OrderEnum.Ascending)
+                        queryProducts = queryProducts.OrderBy(x => x.productionOrderNumber);
+                    else
+                        queryProducts = queryProducts.OrderByDescending(x => x.productionOrderNumber);
+                    break;
+                default:
+                    queryProducts = queryProducts.OrderBy(x => x.productionOrderNumber);
+                    break;
+            }
+            return queryProducts;
+        }
+
 
 
     }

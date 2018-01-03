@@ -70,6 +70,9 @@ These are the fields of the Production Order and it's constrains:
 * typeDescription: Descritpion of the PO Type
   * String (Up to 50 chars)
   * Ignored
+* currentstatus: Current Status of the production order
+  * String
+  * Ignored
 
 ### JSON Example:
 
@@ -93,17 +96,26 @@ These are the fields of the Production Order and it's constrains:
   "productionOrderNumber": "121231321321",
   "productionOrderTypeId": 2,
   "typeDescription": "Tira",
-  "quantity": 0
+  "quantity": 0,
+  "currentstatus:"active"
 }
 ```
 
 ## URLs
 
-* api/productionorders/{optional=startat}{optional=quantity}
+* api/productionorders/{optional=startat}{optional=quantity}{optional=orderField}{optional=order}{optional=fieldFilter}{optional=fieldValue}
 
   * Get: Return List of Production Order
     * startat: represent where the list starts t the database (Default=0)
     * quantity: number of resuls in the query (Default=50)
+    * orderField: Field in which the list will be order by (Possible Values:
+      productionOrderNumber,currentstatus)
+      productGTIN)(Default=ProductId)
+    * order: Represent the order of the listing (Possible Values: ascending,
+      descending)(Default=Ascending)
+    * fieldFilter: represents the field that will be seached (Possible Values:
+      productionOrderNumber,currentstatus) (Default=null)
+    * fieldValue: represents de valued searched on the field (Default=null)
   * Post: Create the Production Order with the JSON in the body
     * Body: Production Order JSON
 
