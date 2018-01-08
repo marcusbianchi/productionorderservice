@@ -16,11 +16,14 @@ namespace productionorderservice.Services
         private readonly ApplicationDbContext _context;
         private readonly IRecipeService _recipeService;
         private readonly IProductionOrderTypeService _productionOrderTypeService;
-        public ProductionOrderService(ApplicationDbContext context, IRecipeService recipeService, IProductionOrderTypeService productionOrderTypeService)
+        private readonly IThingService _thingService;
+        public ProductionOrderService(ApplicationDbContext context, IRecipeService recipeService,
+            IProductionOrderTypeService productionOrderTypeService, IThingService thingService)
         {
             _context = context;
             _recipeService = recipeService;
             _productionOrderTypeService = productionOrderTypeService;
+            _thingService = thingService;
         }
 
         public async Task<ProductionOrder> addProductionOrder(ProductionOrder productionOrder)
@@ -60,9 +63,17 @@ namespace productionorderservice.Services
                                         .Where(x => x.productionOrderId == productionOrderId)
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync();
+            if (productionOrder == null)
+                return null;
             var productionOrderType = await _productionOrderTypeService.getProductionOrderType(productionOrder.productionOrderTypeId.Value);
             if (productionOrderType != null)
                 productionOrder.typeDescription = productionOrderType.typeDescription;
+            if (productionOrder.currentThingId != null)
+            {
+                var (thing, status) = await _thingService.getThing(productionOrder.currentThingId.Value);
+                if (status == HttpStatusCode.OK)
+                    productionOrder.currentThing = thing;
+            }
 
             return productionOrder;
         }
@@ -88,6 +99,20 @@ namespace productionorderservice.Services
             }
 
             return (result, totalCount);
+        }
+
+        public async Task<ProductionOrder> setProductionOrderToThing(ProductionOrder productioOrder, int thingId)
+        {
+            var productioOrderDb = productioOrder;
+            if (productioOrderDb == null)
+            {
+                return null;
+            }
+            productioOrderDb.currentThingId = thingId;
+
+            _context.ProductionOrders.Update(productioOrderDb);
+            await _context.SaveChangesAsync();
+            return productioOrderDb;
         }
 
         private IQueryable<ProductionOrder> ApplyFilter(IQueryable<ProductionOrder> queryProducts,

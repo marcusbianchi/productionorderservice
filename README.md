@@ -210,3 +210,16 @@ API to Manage the current state of a production order on Lorien. Used to update 
 ## After Status Change Post
 
 This API can send the Data to a Endpoint if the configuration in present. The API will send a production order JSON to the configured endpoint.
+
+# AssociateToolAPI
+
+API used to associate a Production Order with a thing. When a Thing is associated with a production order his status is set in the correct api.
+
+## URLs
+
+* api/tool/AssociateProductionOrder/{thingId}{productionOrderId}
+  * Put: Associate the Production Order where productionOrderId=productionOrderId to the thing where thingid=thingid IF THIS IS PERMITED.
+
+## After Association Post
+
+This API can send the Data to a Endpoint if the configuration in present. The API will send a production order JSON to the configured endpoint.

@@ -11,6 +11,8 @@ namespace productionorderservice.Services.Interfaces
         Task<ProductionOrder> addProductionOrder(ProductionOrder productionOrder);
         Task<bool> checkProductionOrderNumber(string productionOrderNumber);
         Task<bool> checkProductionOrderType(int productionOrderTypeId);
+        Task<ProductionOrder> setProductionOrderToThing(ProductionOrder productioOrder, int thingId);
+
     }
 
     public enum ProductionOrderFields

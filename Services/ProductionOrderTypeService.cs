@@ -13,9 +13,14 @@ namespace productionorderservice.Services
     public class ProductionOrderTypeService : IProductionOrderTypeService
     {
         private readonly ApplicationDbContext _context;
-        public ProductionOrderTypeService(ApplicationDbContext context)
+        private readonly IThingGroupService _thingGroupService;
+
+        public ProductionOrderTypeService(ApplicationDbContext context,
+            IThingGroupService thingGroupService)
         {
             _context = context;
+            _thingGroupService = thingGroupService;
+
         }
 
         public async Task<ProductionOrderType> addProductionOrderType(ProductionOrderType productionOrderType)
@@ -48,6 +53,13 @@ namespace productionorderservice.Services
                                 .Include(x => x.stateConfiguration)
                                 .ThenInclude(x => x.states)
                              .FirstOrDefaultAsync();
+
+            if (productionOrderType.thingGroupIds != null && productionOrderType.thingGroupIds.Length != 0)
+            {
+                var (group, status) = await _thingGroupService.getGroupsList(productionOrderType.thingGroupIds);
+                if (status == HttpStatusCode.OK)
+                    productionOrderType.thingGroups = group;
+            }
             return productionOrderType;
         }
 
@@ -64,15 +76,25 @@ namespace productionorderservice.Services
 
         public async Task<ProductionOrderType> updateProductionOrderType(int productionOrderTypeId, ProductionOrderType productionOrderType)
         {
-
-            if (productionOrderTypeId != productionOrderType.productionOrderTypeId || productionOrderType == null)
+            var currentType = await _context.ProductionOrderTypes
+                .Where(x => x.productionOrderTypeId == productionOrderTypeId)
+                .Include(x => x.stateConfiguration)
+                .ThenInclude(x => x.states)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+            if (productionOrderTypeId != productionOrderType.productionOrderTypeId
+                || productionOrderType == null
+                || currentType == null)
             {
                 return null;
             }
+            productionOrderType.stateConfiguration = currentType.stateConfiguration;
 
             _context.ProductionOrderTypes.Update(productionOrderType);
             await _context.SaveChangesAsync();
             return productionOrderType;
         }
+
+
     }
 }

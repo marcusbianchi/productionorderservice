@@ -37,12 +37,16 @@ namespace productionorderservice
                }));
             services.AddSingleton<IRecipePhaseService, RecipePhaseService>();
             services.AddSingleton<IRecipeService, RecipeService>();
+            services.AddSingleton<IThingService, ThingService>();
+            services.AddSingleton<IThingGroupService, ThingGroupService>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ProductionOrderDb")));
             services.AddTransient<IStateConfigurationService, StateConfigurationService>();
             services.AddTransient<IProductionOrderTypeService, ProductionOrderTypeService>();
             services.AddTransient<IProductionOrderService, ProductionOrderService>();
             services.AddTransient<IStateManagementService, StateManagementService>();
+
+            services.AddTransient<IAssociateProductionOrderService, AssociateProductionOrderService>();
 
             services.AddResponseCaching();
             services.AddMvc((options) =>

@@ -12,9 +12,10 @@ using System;
 namespace productionorderservice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180108130307_POTypewithGroupAssociation")]
+    partial class POTypewithGroupAssociation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,8 +168,6 @@ namespace productionorderservice.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue("created");
 
-                    b.Property<int?>("currentThingId");
-
                     b.Property<string>("productionOrderNumber")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -274,8 +273,6 @@ namespace productionorderservice.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("ThingGroupinternalId");
-
-                    b.Property<int?>("currentThingId");
 
                     b.Property<string>("thingCode");
 

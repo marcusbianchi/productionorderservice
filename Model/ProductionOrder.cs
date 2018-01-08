@@ -17,8 +17,10 @@ namespace productionorderservice.Model
         [NotMapped]
         public string typeDescription { get; set; }
         public int? quantity { get; set; }
-
         public string currentStatus { get; set; }
+        public int? currentThingId { get; set; }
+        [NotMapped]
+        public Thing currentThing { get; set; }
 
     }
 }
