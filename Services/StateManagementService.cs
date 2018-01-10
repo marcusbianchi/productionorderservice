@@ -52,7 +52,7 @@ namespace productionorderservice.Services
                 produtionOrder.currentStatus = newState.ToString();
                 _context.Entry(produtionOrder).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                await postAfterChangedState(produtionOrder);
+                postAfterChangedState(produtionOrder);
                 return produtionOrder;
             }
             return null;
@@ -80,25 +80,34 @@ namespace productionorderservice.Services
                 produtionOrder.currentStatus = newState.ToString();
                 _context.Entry(produtionOrder).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                await postAfterChangedState(produtionOrder);
+                postAfterChangedState(produtionOrder);
                 return produtionOrder;
             }
             return null;
         }
 
-        private async Task postAfterChangedState(ProductionOrder productionOrder)
+        private async void postAfterChangedState(ProductionOrder productionOrder)
         {
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var content = new StringContent(JsonConvert.SerializeObject(productionOrder), Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(_configuration["ChangeStatePostEndpoint"], content);
-            if (response.IsSuccessStatusCode)
+            if (_configuration["stateServiceEndpoint"] != null)
             {
-                Console.WriteLine("Data posted");
+                try
+                {
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var content = new StringContent(JsonConvert.SerializeObject(productionOrder), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync(_configuration["ChangeStatePostEndpoint"], content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Data posted");
 
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
-
 
     }
 }

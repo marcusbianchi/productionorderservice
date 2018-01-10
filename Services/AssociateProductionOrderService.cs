@@ -88,38 +88,52 @@ namespace productionorderservice.Services
         private async void UpdateStatusAPI(string context, string contextDescription,
          string statusName, string value, int thingId)
         {
-            if (_configuration["stateServiceEndpoint"] != null)
+            try
             {
-                dynamic state = new JObject();
-                state.context = context;
-                state.contextDescription = contextDescription;
-                state.statusName = statusName;
-                state.value = value;
-                var json = JsonConvert.SerializeObject(state);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var url = _configuration["stateServiceEndpoint"] + "/api/contextstatus/" + thingId + "/" + context + "?recurrent=true";
-                HttpResponseMessage response = await client.PutAsync(url, content);
-                if (response.IsSuccessStatusCode)
+                if (_configuration["stateServiceEndpoint"] != null)
                 {
-                    Console.WriteLine("Data posted on State API");
+                    dynamic state = new JObject();
+                    state.context = context;
+                    state.contextDescription = contextDescription;
+                    state.statusName = statusName;
+                    state.value = value;
+                    var json = JsonConvert.SerializeObject(state);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    var url = _configuration["stateServiceEndpoint"] + "/api/contextstatus/" + thingId + "/" + context + "?recurrent=true";
+                    HttpResponseMessage response = await client.PutAsync(url, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Data posted on State API");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
         private async void Trigger(ProductionOrder productionOrder)
         {
-            if (_configuration["AssociationPostEndpoint"] != null)
+            try
             {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var content = new StringContent(JsonConvert.SerializeObject(productionOrder), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync(_configuration["AssociationPostEndpoint"], content);
-                if (response.IsSuccessStatusCode)
+                if (_configuration["AssociationPostEndpoint"] != null)
                 {
-                    Console.WriteLine("Data posted on AssociationPostEndpoint");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    var content = new StringContent(JsonConvert.SerializeObject(productionOrder), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync(_configuration["AssociationPostEndpoint"], content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Data posted on AssociationPostEndpoint");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
