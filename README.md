@@ -147,6 +147,24 @@ API Responsible to provide access to information nedeed to compose the productio
 
   * Get: Return Recipe with recipeId = ID
 
+* gateway/thinggroups/{optional=startat}{optional=quantity}
+
+  * Get: Return List of Groups of Things
+    * startat: represent where the list starts at the database (Default=0)
+    * quantity: number of resuls in the query (Default=50)
+
+* gateway/thinggroups/{id}
+
+  * Get: Return Group of Things with thingGroupId = ID
+
+* gateway/thinggroups/attachedthings/{groupid}
+
+  * Get: List of Thing inside the group where thingGroupId = ID
+
+* gateway/things/{id}
+
+  * Get: Thing where thingId = ID
+
 # StateConfigurationAPI
 
 API to Manage The possible states for Order Types on Lorien. Used to update and read the state configuration of a production Order Type.
@@ -217,9 +235,9 @@ API used to associate a Production Order with a thing. When a Thing is associate
 
 ## URLs
 
-* api/tool/AssociateProductionOrder/associate/{thingId}{productionOrderId}
+* api/productionorders/AssociateProductionOrder/associate/{thingId}{productionOrderId}
   * Put: Associate the Production Order where productionOrderId=productionOrderId to the thing where thingid=thingid IF THIS IS PERMITED.
-* api/tool/AssociateProductionOrder/disassociate/
+* api/productionorders/AssociateProductionOrder/disassociate/
   * Put: Disassociate the Production Order where productionOrderId=productionOrderId to the thing where thingid=thingid IF THIS IS PERMITED.
     * Body: productionOrder JSON
 
