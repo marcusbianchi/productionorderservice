@@ -48,6 +48,9 @@ namespace productionorderservice.Services
             var POType = await _productionOrderTypeService.getProductionOrderType(PO.productionOrderTypeId.Value);
             if (POType == null)
                 return (null, "Production Order Type Not Found");
+            var POOnThing = await _productionOrderService.getProductionOrderOnThing(thingId);
+            if (POOnThing != null && POOnThing.productionOrderTypeId == POType.productionOrderTypeId)
+                return (null, "This thing already have a thing associated to it of the same type");
             var thingGroups = POType.thingGroups;
             bool contains = false;
             foreach (var group in thingGroups)
@@ -63,6 +66,23 @@ namespace productionorderservice.Services
             Trigger(PO);
             PO = await _productionOrderService.getProductionOrder(productioOrderId);
             return (PO, "Production Order Set to Thing");
+        }
+
+        public async Task<(ProductionOrder, string)> DisassociateProductionOrder(ProductionOrder productionOrder)
+        {
+            var PODB = await _productionOrderService.getProductionOrder(productionOrder.productionOrderId);
+            if (PODB == null)
+                return (null, "Production Order Not Found");
+            if (PODB.currentStatus != stateEnum.active.ToString())
+                return (null, "Production Order Not Active");
+            var POType = await _productionOrderTypeService.getProductionOrderType(productionOrder.productionOrderTypeId.Value);
+            if (POType == null)
+                return (null, "Production Order Type Not Found");
+            UpdateStatusAPI(POType.typeScope, POType.typeDescription, "productionOrderNumber", "", PODB.currentThingId.Value);
+            await _productionOrderService.setProductionOrderToThing(PODB, null);
+            Trigger(PODB);
+            PODB = await _productionOrderService.getProductionOrder(productionOrder.productionOrderId);
+            return (PODB, "Production Order Disassociated");
         }
 
         private async void UpdateStatusAPI(string context, string contextDescription,

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using productionorderservice.Model;
 using productionorderservice.Services.Interfaces;
 
 namespace productionorderservice.Controllers
@@ -23,7 +24,7 @@ namespace productionorderservice.Controllers
             _associateProductionOrderService = associateProductionOrderService;
         }
 
-        [HttpPut]
+        [HttpPut("associate/")]
         [Produces("application/json")]
         public async Task<IActionResult> GetGroups([FromQuery]int thingId, [FromQuery]int productionOrderId)
         {
@@ -32,6 +33,20 @@ namespace productionorderservice.Controllers
             if (PO == null)
                 return BadRequest(result);
             return Ok(PO);
+        }
+
+        [HttpPut("disassociate/")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Disassociate([FromBody]ProductionOrder productionOrder)
+        {
+            if (ModelState.IsValid)
+            {
+                var (PO, result) = await _associateProductionOrderService.DisassociateProductionOrder(productionOrder);
+                if (PO == null)
+                    return BadRequest(result);
+                return Ok(PO);
+            }
+            return BadRequest(ModelState);
         }
 
 

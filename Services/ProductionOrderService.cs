@@ -101,7 +101,7 @@ namespace productionorderservice.Services
             return (result, totalCount);
         }
 
-        public async Task<ProductionOrder> setProductionOrderToThing(ProductionOrder productioOrder, int thingId)
+        public async Task<ProductionOrder> setProductionOrderToThing(ProductionOrder productioOrder, int? thingId)
         {
             var productioOrderDb = productioOrder;
             if (productioOrderDb == null)
@@ -114,6 +114,35 @@ namespace productionorderservice.Services
             await _context.SaveChangesAsync();
             return productioOrderDb;
         }
+
+        public async Task<ProductionOrder> getProductionOrderOnThing(int thingId)
+        {
+            var productionOrder = await _context.ProductionOrders
+                                        .Include(x => x.recipe)
+                                        .Include(x => x.recipe.phases)
+                                        .Include(x => x.recipe.recipeProduct)
+                                        .Include(x => x.recipe.recipeProduct.product)
+                                        .Include("recipe.phases.phaseProducts")
+                                        .Include("recipe.phases.phaseParameters")
+                                        .Include("recipe.phases.phaseProducts.product")
+                                        .Where(x => x.currentThingId == thingId)
+                                        .AsNoTracking()
+                                        .FirstOrDefaultAsync();
+            if (productionOrder == null)
+                return null;
+            var productionOrderType = await _productionOrderTypeService.getProductionOrderType(productionOrder.productionOrderTypeId.Value);
+            if (productionOrderType != null)
+                productionOrder.typeDescription = productionOrderType.typeDescription;
+            if (productionOrder.currentThingId != null)
+            {
+                var (thing, status) = await _thingService.getThing(productionOrder.currentThingId.Value);
+                if (status == HttpStatusCode.OK)
+                    productionOrder.currentThing = thing;
+            }
+
+            return productionOrder;
+        }
+
 
         private IQueryable<ProductionOrder> ApplyFilter(IQueryable<ProductionOrder> queryProducts,
         ProductionOrderFields fieldFilter, string fieldValue)
