@@ -21,8 +21,46 @@ These are the fields of the Production Order Type and it's constrains:
 ```json
 {
   "productionOrderTypeId": 1,
-  "typeDescription": "Liga",
-  "typeScope": "OP-Liga"
+  "typeDescription": "Tira",
+  "typeScope": "OP-Tira",
+  "stateConfiguration": {
+    "productionOrderTypeId": 1,
+    "states": [
+      {
+        "state": "created",
+        "possibleNextStates": ["inactive", "active"]
+      },
+      {
+        "state": "active",
+        "possibleNextStates": ["paused", "ended"]
+      },
+      {
+        "state": "paused",
+        "possibleNextStates": ["active", "ended"]
+      },
+      {
+        "state": "ended",
+        "possibleNextStates": []
+      },
+      {
+        "state": "inactive",
+        "possibleNextStates": []
+      }
+    ]
+  },
+  "thingGroups": [
+    {
+      "thingGroupId": 1,
+      "groupName": "teste",
+      "groupCode": "teste"
+    },
+    {
+      "thingGroupId": 2,
+      "groupName": "Equipamentos",
+      "groupCode": "Historian"
+    }
+  ],
+  "thingGroupIds": [1, 2]
 }
 ```
 

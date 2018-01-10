@@ -65,13 +65,17 @@ namespace productionorderservice.Services
 
         public async Task<List<ProductionOrderType>> getProductionOrderTypes(int startat, int quantity)
         {
-            var productionOrderTypes = await _context.ProductionOrderTypes
+            var productionOrderTypesIds = await _context.ProductionOrderTypes
                                 .OrderBy(x => x.productionOrderTypeId)
                                 .Skip(startat).Take(quantity)
-                                .Include(x => x.stateConfiguration)
-                                .ThenInclude(x => x.states)
+                                .Select(x => x.productionOrderTypeId)
                                 .ToListAsync();
-            return productionOrderTypes;
+            List<ProductionOrderType> pOtypes = new List<ProductionOrderType>();
+            foreach (var item in productionOrderTypesIds)
+            {
+                pOtypes.Add(await getProductionOrderType(item));
+            }
+            return pOtypes;
         }
 
         public async Task<ProductionOrderType> updateProductionOrderType(int productionOrderTypeId, ProductionOrderType productionOrderType)
