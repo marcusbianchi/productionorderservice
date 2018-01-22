@@ -19,7 +19,6 @@ namespace productionorderservice.Model
         public string minValue { get; set; }
         [MaxLength(50)]
         public string maxValue { get; set; }
-        [NotMapped]
         public Tag tag { get; set; }
     }
 }
