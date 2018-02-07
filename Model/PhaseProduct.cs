@@ -18,11 +18,9 @@ namespace productionorderservice.Model
         [JsonIgnore]
         public int internalId { get; set; }
         [Required]
-        [MaxLength(50)]
-        public string value { get; set; }
+        public double minValue { get; set; }
         [Required]
-        [MaxLength(50)]
-        public string tolerance { get; set; }
+        public double maxValue { get; set; }
         [Required]
         [MaxLength(50)]
         public string measurementUnit { get; set; }
