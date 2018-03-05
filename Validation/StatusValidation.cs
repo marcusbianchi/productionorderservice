@@ -16,7 +16,9 @@ namespace productionorderservice.Validation
         ended,
         waiting_approval,
         approved,
-        reproved
+        reproved,
+        dumping,
+        loading
     }
     public class StatusValidation : ValidationAttribute
     {
