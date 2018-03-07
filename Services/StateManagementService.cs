@@ -25,11 +25,7 @@ namespace productionorderservice.Services
         {
             _context = context;
             _configuration = configuration;
-            if (_configuration["ChangeStatePostEndpoint"] != null)
-            {
-                client = new HttpClient();
-
-            }
+            client = new HttpClient();
         }
         public async Task<ProductionOrder> setProductionOrderToStatusById(int productionOrderId, stateEnum newState)
         {
@@ -49,10 +45,14 @@ namespace productionorderservice.Services
                 return null;
             if (curState.possibleNextStates.Contains(newState.ToString()))
             {
+                 string url = productionOrderType.stateConfiguration.states
+                        .Where(x => x.state == newState.ToString()).FirstOrDefault().url;
+                        
                 produtionOrder.currentStatus = newState.ToString();
                 _context.Entry(produtionOrder).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                postAfterChangedState(produtionOrder);
+                if(!string.IsNullOrEmpty(url))
+                postAfterChangedState(url,produtionOrder);
                 return produtionOrder;
             }
             return null;
@@ -77,25 +77,30 @@ namespace productionorderservice.Services
                 return null;
             if (curState.possibleNextStates.Contains(newState.ToString()))
             {
+                string url = productionOrderType.stateConfiguration.states
+                        .Where(x => x.state == newState.ToString()).FirstOrDefault().url;
+
                 produtionOrder.currentStatus = newState.ToString();
                 _context.Entry(produtionOrder).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                postAfterChangedState(produtionOrder);
+
+                if(!string.IsNullOrEmpty(url))
+                postAfterChangedState(url,produtionOrder);
                 return produtionOrder;
             }
             return null;
         }
 
-        private async void postAfterChangedState(ProductionOrder productionOrder)
+        private async void postAfterChangedState(string url,ProductionOrder productionOrder)
         {
-            if (_configuration["stateServiceEndpoint"] != null)
+            if (url != null)
             {
                 try
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     var content = new StringContent(JsonConvert.SerializeObject(productionOrder), Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await client.PostAsync(_configuration["ChangeStatePostEndpoint"], content);
+                    HttpResponseMessage response = await client.PostAsync(url, content);
                     if (response.IsSuccessStatusCode)
                     {
                         Console.WriteLine("Data posted");

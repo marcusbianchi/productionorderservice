@@ -8,6 +8,7 @@ namespace productionorderservice.Model
         [JsonIgnore]
         public int configuredStateId { get; set; }
         public string state { get; set; }
+        public string url{get;set;}
         public string[] possibleNextStates { get; set; }
     }
 }
