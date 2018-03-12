@@ -12,6 +12,7 @@ namespace productionorderservice.Model
         public string tagName { get; set; }
         public string tagDescription { get; set; }
         public int thingGroupId { get; set; }
+        public string tagGroup{get;set;}
         public ThingGroup thingGroup { get; set; }
 
     }
