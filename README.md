@@ -282,3 +282,45 @@ API used to associate a Production Order with a thing. When a Thing is associate
 ## After Association Post
 
 This API can send the Data to a Endpoint if the configuration in present. The API will send a production order JSON to the configured endpoint.
+
+## Historian State Production Order
+Endpoint with historian changes states of the production orders
+
+* histStatesId: Id of the historian state by de Database.
+  * Integer
+* productionOrderId: Id of The Production Order
+  * Integer
+* state: state of production order
+  * String
+* date: datetime of the historian in ticks
+  * Long
+
+### JSON Example:
+
+```json
+[
+    {
+        "histStatesId": 1,
+        "productionOrderId": 1,
+        "state": "created",
+        "date": 636582793631549624
+    },
+    {
+        "histStatesId": 2,
+        "productionOrderId": 1,
+        "state": "active",
+        "date": 636582793901537505
+    }
+]
+```
+## URLs
+* api/ProductionOrdersHistStates?{ProductionOrderId=productionOrderId}
+
+  * Get: Return list with historian production order
+    * productionOrderId: id of production order
+
+* api/ProductionOrdersHistStates?{ProductionOrderId=productionOrderId}&{State=state}
+
+  * Post: Create Historian of state in production order
+    * productionOrderId: id of production order
+    * state: state for historian

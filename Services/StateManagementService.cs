@@ -19,12 +19,15 @@ namespace productionorderservice.Services
     public class StateManagementService : IStateManagementService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;        
+        private readonly IHistStateService _histStateService;
         private readonly HttpClient client;
-        public StateManagementService(ApplicationDbContext context, IConfiguration configuration)
+        public StateManagementService(ApplicationDbContext context, IConfiguration configuration
+        , IHistStateService histStateService)
         {
             _context = context;
             _configuration = configuration;
+            _histStateService = histStateService;
             client = new HttpClient();
         }
         public async Task<ProductionOrder> setProductionOrderToStatusById(int productionOrderId, stateEnum newState)
@@ -51,6 +54,9 @@ namespace productionorderservice.Services
                 produtionOrder.currentStatus = newState.ToString();
                 _context.Entry(produtionOrder).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+
+                await _histStateService.addHistStates(productionOrderId,newState.ToString());
+
                 if(!string.IsNullOrEmpty(url))
                 postAfterChangedState(url,produtionOrder);
                 return produtionOrder;

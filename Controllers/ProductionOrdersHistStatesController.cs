@@ -25,7 +25,7 @@ namespace productionorderservice.Controllers
         } 
 
         [HttpGet]
-        public async Task<IActionResult> Get(int productionOrderId)
+        public async Task<IActionResult> Get([FromQuery]int productionOrderId)
         {
             if(productionOrderId > 0)
             {
@@ -40,7 +40,7 @@ namespace productionorderservice.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(int productionOrderId,string state)
+        public async Task<IActionResult> Post([FromQuery] int productionOrderId,[FromQuery]string state)
         {
             if(productionOrderId>0)
             {
