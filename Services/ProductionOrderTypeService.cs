@@ -96,7 +96,7 @@ namespace productionorderservice.Services
 
             _context.ProductionOrderTypes.Update(productionOrderType);
             await _context.SaveChangesAsync();
-            return productionOrderType;
+            return await getProductionOrderType(productionOrderTypeId);
         }
 
 
