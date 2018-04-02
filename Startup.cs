@@ -46,6 +46,7 @@ namespace productionorderservice
             services.AddTransient<IProductionOrderTypeService, ProductionOrderTypeService>();
             services.AddTransient<IProductionOrderService, ProductionOrderService>();
             services.AddTransient<IStateManagementService, StateManagementService>();
+            services.AddTransient<IHistStateService,HistStatesService>();
 
             services.AddTransient<IAssociateProductionOrderService, AssociateProductionOrderService>();
 
