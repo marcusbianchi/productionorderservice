@@ -30,6 +30,16 @@ namespace productionorderservice.Services
 
         }
 
+        public async Task<IEnumerable<int>> getHistStatesPerStatusAndDate(string statusSearch, long startDate, long endDate)
+        {
+            var productionOrderIds = await _context.HistStates.Where(x=>x.state.ToLower() == statusSearch.ToLower()
+                                                                && x.date >= startDate && x.date <= endDate )
+                                                                .Select(x=>x.productionOrderId)
+                                                                .ToListAsync();
+            
+            return productionOrderIds;
+        }
+
         public async Task<HistState> addHistStates(int productionOrderId,string state)
         {
             try

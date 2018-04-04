@@ -82,17 +82,37 @@ namespace productionorderservice.Services
         }
 
         public async Task<(List<ProductionOrder>, int)> getProductionOrders(int startat, int quantity
-        , ProductionOrderFields fieldFilter, string fieldValue,
-            ProductionOrderFields orderField, OrderEnum order)
+        , List<string> fields,ProductionOrderFields orderField, OrderEnum order)
         {
             var productionOrdersQuery = _context.ProductionOrders.Where(x => x.currentStatus != stateEnum.inactive.ToString());
-            productionOrdersQuery = ApplyFilter(productionOrdersQuery, fieldFilter, fieldValue);
+            foreach (var field in fields)
+            {
+                string fieldValue = string.Empty;
+                var fieldSplit = field.Split(",");
+                if(fieldSplit.Count()>1)
+                    fieldValue = fieldSplit[1];
+
+                var fieldFilterEnum = ProductionOrderFields.Default;
+                Enum.TryParse(fieldSplit[0], true, out fieldFilterEnum);
+                productionOrdersQuery = ApplyFilter(productionOrdersQuery, fieldFilterEnum, fieldValue);
+            }
+           
             productionOrdersQuery = ApplyOrder(productionOrdersQuery, orderField, order);
 
             var productionOrders = await productionOrdersQuery.Skip(startat).Take(quantity)
                                                         .ToListAsync();
             var queryCount = _context.ProductionOrders.Where(x => x.currentStatus != stateEnum.inactive.ToString());
-            queryCount = ApplyFilter(queryCount, fieldFilter, fieldValue);
+            foreach (var field in fields)
+            {
+                string fieldValue = string.Empty;
+                var fieldSplit = field.Split(",");
+                if(fieldSplit.Count()>1)
+                    fieldValue = fieldSplit[1];
+
+                var fieldFilterEnum = ProductionOrderFields.Default;
+                Enum.TryParse(fieldSplit[0], true, out fieldFilterEnum);
+                queryCount = ApplyFilter(queryCount, fieldFilterEnum, fieldValue);
+            }
             queryCount = ApplyOrder(queryCount, orderField, order);
             var totalCount = queryCount.Count();
             List<ProductionOrder> result = new List<ProductionOrder>();
@@ -160,6 +180,9 @@ namespace productionorderservice.Services
                     break;
                 case ProductionOrderFields.productionOrderNumber:
                     queryProducts = queryProducts.Where(x => x.productionOrderNumber.Contains(fieldValue));
+                    break;
+                case ProductionOrderFields.productionOrderTypeId:
+                    queryProducts = queryProducts.Where(x => x.productionOrderTypeId.ToString().Contains(fieldValue));
                     break;
                 default:
                     break;

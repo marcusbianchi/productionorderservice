@@ -157,6 +157,20 @@ These are the fields of the Production Order and it's constrains:
   * Post: Create the Production Order with the JSON in the body
     * Body: Production Order JSON
 
+  * api/ProductionOrders/v2?{optional=startat}{optional=quantity}{optional=orderField}{optional=order}{optional=filters}
+
+  * Get: Return List of Production Order
+    * startat: represent where the list starts t the database (Default=0)
+    * quantity: number of resuls in the query (Default=50)
+    * orderField: Field in which the list will be order by (Possible Values:
+      productionOrderNumber,currentstatus)
+      productGTIN)(Default=ProductId)
+    * order: Represent the order of the listing (Possible Values: ascending,
+      descending)(Default=Ascending)
+    * filters: List represents the field that will be seached (Possible Values:
+      productionOrderNumber,currentstatus) (Default=null) and (virgule) and represents de valued searched on the field (Default=null)
+      Ex: api/ProductionOrders/v2?filters=productionOrderTypeId,1&filters=currentStatus,reproved
+
 * api/productionorders/{id}
 
   * Get: Return Production Order with productionOrderId = ID
@@ -319,8 +333,15 @@ Endpoint with historian changes states of the production orders
   * Get: Return list with historian production order
     * productionOrderId: id of production order
 
+* api/ProductionOrdersHistStates/productionOrderList?{StatusSearch=status}&{StartDate=startDate}&{EndDate=endDate}
+
+  * Get: Return list int with productionOrderId that are in the date range
+    * StatusSearch: status in search
+    * StartDate: start date range in ticks
+    * EndDate: end date range in ticks
+
 * api/ProductionOrdersHistStates?{ProductionOrderId=productionOrderId}&{State=state}
 
   * Post: Create Historian of state in production order
     * productionOrderId: id of production order
-    * state: state for historian
+    * state: state for historian 

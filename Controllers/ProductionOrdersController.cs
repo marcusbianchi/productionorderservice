@@ -30,8 +30,8 @@ namespace productionorderservice.Controllers
             [FromQuery]string fieldFilter, [FromQuery]string fieldValue,
             [FromQuery]string orderField, [FromQuery]string order)
         {
-            var fieldFilterEnum = ProductionOrderFields.Default;
-            Enum.TryParse(fieldFilter, true, out fieldFilterEnum);
+            List<string> fields = new List<string>();
+            fields.Add(fieldFilter +","+ fieldValue);
             var orderFieldEnum = ProductionOrderFields.Default;
             Enum.TryParse(orderField, true, out orderFieldEnum);
             var orderEnumValue = OrderEnum.Ascending;
@@ -39,10 +39,26 @@ namespace productionorderservice.Controllers
             if (quantity == 0)
                 quantity = 50;
             var (productionOrders, total) = await _productionOrderService.getProductionOrders(startat, quantity,
-            fieldFilterEnum, fieldValue, orderFieldEnum, orderEnumValue); ;
+            fields, orderFieldEnum, orderEnumValue);
             return Ok(new { values = productionOrders, total = total });
         }
 
+        [HttpGet("v2")]
+        [ResponseCache(CacheProfileName = "productionordercache")]
+        public async Task<IActionResult> Get([FromQuery]int startat, [FromQuery]int quantity,
+            [FromQuery]List<string> filters,[FromQuery]string orderField, [FromQuery]string order)
+        {
+            var orderFieldEnum = ProductionOrderFields.Default;
+            Enum.TryParse(orderField, true, out orderFieldEnum);
+            var orderEnumValue = OrderEnum.Ascending;
+            Enum.TryParse(order, true, out orderEnumValue);
+            if (quantity == 0)
+                quantity = 50;
+            var (productionOrders, total) = await _productionOrderService.getProductionOrders(startat, quantity,
+            filters, orderFieldEnum, orderEnumValue);
+            return Ok(new { values = productionOrders, total = total });
+        }
+       
         [HttpGet("{id}")]
         [ResponseCache(CacheProfileName = "productionordercache")]
         public async Task<IActionResult> Get(int id)

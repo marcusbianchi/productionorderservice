@@ -6,7 +6,7 @@ namespace productionorderservice.Services.Interfaces
 {
     public interface IProductionOrderService
     {
-        Task<(List<ProductionOrder>, int)> getProductionOrders(int startat, int quantity, ProductionOrderFields fieldFilter, string fieldValue, ProductionOrderFields orderField, OrderEnum order);
+        Task<(List<ProductionOrder>, int)> getProductionOrders(int startat, int quantity, List<string> fields, ProductionOrderFields orderField, OrderEnum order);
         Task<ProductionOrder> getProductionOrder(int productionOrderId);
         Task<ProductionOrder> addProductionOrder(ProductionOrder productionOrder);
         Task<bool> checkProductionOrderNumber(string productionOrderNumber);
@@ -20,6 +20,7 @@ namespace productionorderservice.Services.Interfaces
     {
         Default,
         productionOrderNumber,
-        currentStatus
+        currentStatus,
+        productionOrderTypeId
     }
 }

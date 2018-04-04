@@ -39,6 +39,21 @@ namespace productionorderservice.Controllers
             return NotFound();
         }
 
+        [HttpGet("productionOrderList")]
+        public async Task<IActionResult> Get([FromQuery]string statusSearch, [FromQuery]long startDate, [FromQuery]long endDate)
+        {
+            if(!string.IsNullOrEmpty(statusSearch))
+            {
+                var productionOrderIds = await _histStatesService.getHistStatesPerStatusAndDate(statusSearch,startDate,endDate);
+
+                if(productionOrderIds.Count() != 0)
+                {
+                    return Ok(productionOrderIds);
+                }
+            }
+            return NotFound();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromQuery] int productionOrderId,[FromQuery]string state)
         {
