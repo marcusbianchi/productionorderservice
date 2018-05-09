@@ -13,91 +13,84 @@ using Newtonsoft.Json;
 using productionorderservice.Model;
 using productionorderservice.Services.Interfaces;
 
-namespace productionorderservice.Controllers
-{
-    [Route("api/[controller]")]
-    public class ProductionOrdersController : Controller
-    {
+namespace productionorderservice.Controllers {
+    [Route ("api/[controller]")]
+    public class ProductionOrdersController : Controller {
         private readonly IProductionOrderService _productionOrderService;
-        public ProductionOrdersController(IProductionOrderService productionOrderService)
-        {
+        public ProductionOrdersController (IProductionOrderService productionOrderService) {
             _productionOrderService = productionOrderService;
         }
 
         [HttpGet]
-        [ResponseCache(CacheProfileName = "productionordercache")]
-        public async Task<IActionResult> Get([FromQuery]int startat, [FromQuery]int quantity,
-            [FromQuery]string fieldFilter, [FromQuery]string fieldValue,
-            [FromQuery]string orderField, [FromQuery]string order)
-        {
-            List<string> fields = new List<string>();
-            fields.Add(fieldFilter +","+ fieldValue);
+        [ResponseCache (CacheProfileName = "productionordercache")]
+        public async Task<IActionResult> Get ([FromQuery] int startat, [FromQuery] int quantity, [FromQuery] string fieldFilter, [FromQuery] string fieldValue, [FromQuery] string orderField, [FromQuery] string order) {
+            List<string> fields = new List<string> ();
+            fields.Add (fieldFilter + "," + fieldValue);
             var orderFieldEnum = ProductionOrderFields.Default;
-            Enum.TryParse(orderField, true, out orderFieldEnum);
+            Enum.TryParse (orderField, true, out orderFieldEnum);
             var orderEnumValue = OrderEnum.Ascending;
-            Enum.TryParse(order, true, out orderEnumValue);
+            Enum.TryParse (order, true, out orderEnumValue);
             if (quantity == 0)
                 quantity = 50;
-            var (productionOrders, total) = await _productionOrderService.getProductionOrders(startat, quantity,
-            fields, orderFieldEnum, orderEnumValue);
-            return Ok(new { values = productionOrders, total = total });
+            var (productionOrders, total) = await _productionOrderService.getProductionOrders (startat, quantity,
+                fields, orderFieldEnum, orderEnumValue);
+            return Ok (new { values = productionOrders, total = total });
         }
 
-        [HttpGet("v2")]
-        [ResponseCache(CacheProfileName = "productionordercache")]
-        public async Task<IActionResult> Get([FromQuery]int startat, [FromQuery]int quantity,
-            [FromQuery]List<string> filters,[FromQuery]string orderField, [FromQuery]string order)
-        {
+        [HttpGet ("v2")]
+        [ResponseCache (CacheProfileName = "productionordercache")]
+        public async Task<IActionResult> Get ([FromQuery] int startat, [FromQuery] int quantity, [FromQuery] List<string> filters, [FromQuery] string orderField, [FromQuery] string order) {
             var orderFieldEnum = ProductionOrderFields.Default;
-            Enum.TryParse(orderField, true, out orderFieldEnum);
+            Enum.TryParse (orderField, true, out orderFieldEnum);
             var orderEnumValue = OrderEnum.Ascending;
-            Enum.TryParse(order, true, out orderEnumValue);
+            Enum.TryParse (order, true, out orderEnumValue);
             if (quantity == 0)
                 quantity = 50;
-            var (productionOrders, total) = await _productionOrderService.getProductionOrders(startat, quantity,
-            filters, orderFieldEnum, orderEnumValue);
-            return Ok(new { values = productionOrders, total = total });
+            var (productionOrders, total) = await _productionOrderService.getProductionOrders (startat, quantity,
+                filters, orderFieldEnum, orderEnumValue);
+            return Ok (new { values = productionOrders, total = total });
         }
-       
-        [HttpGet("{id}")]
-        [ResponseCache(CacheProfileName = "productionordercache")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var productionOrder = await _productionOrderService.getProductionOrder(id);
+
+        [HttpGet ("{id}")]
+        [ResponseCache (CacheProfileName = "productionordercache")]
+        public async Task<IActionResult> Get (int id) {
+            var productionOrder = await _productionOrderService.getProductionOrder (id);
             if (productionOrder == null)
-                return NotFound();
-            return Ok(productionOrder);
+                return NotFound ();
+            return Ok (productionOrder);
+        }
+
+        [HttpGet ("/thing/{thingid}")]
+        [ResponseCache (CacheProfileName = "productionordercache")]
+        public async Task<IActionResult> GetThingId (int thingid) {
+            var productionOrder = await _productionOrderService.getProductionOrderOnThing (thingid);
+            if (productionOrder == null)
+                return NotFound ();
+            return Ok (productionOrder);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]ProductionOrder productionOrder)
-        {
+        public async Task<IActionResult> Post ([FromBody] ProductionOrder productionOrder) {
             productionOrder.productionOrderId = 0;
-            if (ModelState.IsValid)
-            {
-                bool pOExists = await _productionOrderService.checkProductionOrderNumber(productionOrder.productionOrderNumber);
-                if (pOExists)
-                {
-                    ModelState.AddModelError("productionOrderNumber", "This Production Order Number already exists.");
-                    return BadRequest(ModelState);
+            if (ModelState.IsValid) {
+                bool pOExists = await _productionOrderService.checkProductionOrderNumber (productionOrder.productionOrderNumber);
+                if (pOExists) {
+                    ModelState.AddModelError ("productionOrderNumber", "This Production Order Number already exists.");
+                    return BadRequest (ModelState);
                 }
-                bool pOTypeExists = await _productionOrderService.checkProductionOrderType(productionOrder.productionOrderTypeId.Value);
-                if (!pOTypeExists)
-                {
-                    ModelState.AddModelError("productionOrderTypeId", "This Production Order Type Doesn't exists.");
-                    return BadRequest(ModelState);
+                bool pOTypeExists = await _productionOrderService.checkProductionOrderType (productionOrder.productionOrderTypeId.Value);
+                if (!pOTypeExists) {
+                    ModelState.AddModelError ("productionOrderTypeId", "This Production Order Type Doesn't exists.");
+                    return BadRequest (ModelState);
                 }
 
-                productionOrder = await _productionOrderService.addProductionOrder(productionOrder);
+                productionOrder = await _productionOrderService.addProductionOrder (productionOrder);
                 if (productionOrder == null)
-                    return BadRequest();
-                return Created($"api/phases/{productionOrder.productionOrderId}", productionOrder);
+                    return BadRequest ();
+                return Created ($"api/phases/{productionOrder.productionOrderId}", productionOrder);
             }
-            return BadRequest(ModelState);
+            return BadRequest (ModelState);
         }
-
-
-
 
     }
 }

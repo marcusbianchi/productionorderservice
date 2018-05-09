@@ -142,7 +142,6 @@ These are the fields of the Production Order and it's constrains:
 ## URLs
 
 * api/productionorders/{optional=startat}{optional=quantity}{optional=orderField}{optional=order}{optional=fieldFilter}{optional=fieldValue}
-
   * Get: Return List of Production Order
     * startat: represent where the list starts t the database (Default=0)
     * quantity: number of resuls in the query (Default=50)
@@ -157,8 +156,7 @@ These are the fields of the Production Order and it's constrains:
   * Post: Create the Production Order with the JSON in the body
     * Body: Production Order JSON
 
-  * api/ProductionOrders/v2?{optional=startat}{optional=quantity}{optional=orderField}{optional=order}{optional=filters}
-
+* api/ProductionOrders/v2?{optional=startat}{optional=quantity}{optional=orderField}{optional=order}{optional=filters}
   * Get: Return List of Production Order
     * startat: represent where the list starts t the database (Default=0)
     * quantity: number of resuls in the query (Default=50)
@@ -172,8 +170,10 @@ These are the fields of the Production Order and it's constrains:
       Ex: api/ProductionOrders/v2?filters=productionOrderTypeId,1&filters=currentStatus,reproved
 
 * api/productionorders/{id}
-
   * Get: Return Production Order with productionOrderId = ID
+
+* api/productionorders/thing/{thingid}
+  * Get: Return Production Order with currentthing = thingid
 
 # GatewayAPI
 
