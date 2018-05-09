@@ -52,7 +52,6 @@ namespace productionorderservice.Controllers {
         }
 
         [HttpGet ("{id}")]
-        [ResponseCache (CacheProfileName = "productionordercache")]
         public async Task<IActionResult> Get (int id) {
             var productionOrder = await _productionOrderService.getProductionOrder (id);
             if (productionOrder == null)
@@ -60,10 +59,11 @@ namespace productionorderservice.Controllers {
             return Ok (productionOrder);
         }
 
-        [HttpGet ("/thing/{thingid}")]
-        [ResponseCache (CacheProfileName = "productionordercache")]
-        public async Task<IActionResult> GetThingId (int thingid) {
-            var productionOrder = await _productionOrderService.getProductionOrderOnThing (thingid);
+        [HttpGet ("thing/{thingid}")]
+        public async Task<IActionResult> GetThindId (int? thingid) {
+            if (thingid == null)
+                return NotFound ();
+            var productionOrder = await _productionOrderService.getProductionOrderOnThing (thingid.Value);
             if (productionOrder == null)
                 return NotFound ();
             return Ok (productionOrder);
