@@ -11,6 +11,7 @@ namespace productionorderservice.Model
         scrap,
         finished,
         semi_finished,
+        base_product
     }
     public class PhaseProduct
     {
