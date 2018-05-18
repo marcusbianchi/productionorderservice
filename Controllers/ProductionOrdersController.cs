@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using productionorderservice.Model;
 using productionorderservice.Services.Interfaces;
+using securityfilter;
 
 namespace productionorderservice.Controllers {
     [Route ("api/[controller]")]
@@ -23,6 +24,7 @@ namespace productionorderservice.Controllers {
 
         [HttpGet]
         [ResponseCache (CacheProfileName = "productionordercache")]
+        [SecurityFilter ("production_order__allow_read")]
         public async Task<IActionResult> Get ([FromQuery] int startat, [FromQuery] int quantity, [FromQuery] string fieldFilter, [FromQuery] string fieldValue, [FromQuery] string orderField, [FromQuery] string order) {
             List<string> fields = new List<string> ();
             fields.Add (fieldFilter + "," + fieldValue);
@@ -39,6 +41,7 @@ namespace productionorderservice.Controllers {
 
         [HttpGet ("v2")]
         [ResponseCache (CacheProfileName = "productionordercache")]
+        [SecurityFilter ("production_order__allow_read")]
         public async Task<IActionResult> Get ([FromQuery] int startat, [FromQuery] int quantity, [FromQuery] List<string> filters, [FromQuery] string orderField, [FromQuery] string order) {
             var orderFieldEnum = ProductionOrderFields.Default;
             Enum.TryParse (orderField, true, out orderFieldEnum);
@@ -52,6 +55,7 @@ namespace productionorderservice.Controllers {
         }
 
         [HttpGet ("{id}")]
+        [SecurityFilter ("production_order__allow_read")]
         public async Task<IActionResult> Get (int id) {
             var productionOrder = await _productionOrderService.getProductionOrder (id);
             if (productionOrder == null)
@@ -60,6 +64,7 @@ namespace productionorderservice.Controllers {
         }
 
         [HttpGet ("thing/{thingid}")]
+        [SecurityFilter ("production_order__allow_read")]
         public async Task<IActionResult> GetThindId (int? thingid) {
             if (thingid == null)
                 return NotFound ();
@@ -70,6 +75,7 @@ namespace productionorderservice.Controllers {
         }
 
         [HttpPost]
+        [SecurityFilter ("production_order__allow_update")]
         public async Task<IActionResult> Post ([FromBody] ProductionOrder productionOrder) {
             productionOrder.productionOrderId = 0;
             if (ModelState.IsValid) {
