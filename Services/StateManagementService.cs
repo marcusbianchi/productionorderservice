@@ -52,13 +52,14 @@ namespace productionorderservice.Services
                         .Where(x => x.state == newState.ToString()).FirstOrDefault().url;
                         
                 produtionOrder.currentStatus = newState.ToString();
+                produtionOrder.latestUpdate = DateTime.Now.Ticks;
                 _context.Entry(produtionOrder).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 await _histStateService.addHistStates(productionOrderId,newState.ToString());
-
+                
                 if(!string.IsNullOrEmpty(url))
-                postAfterChangedState(url,produtionOrder);
+                    postAfterChangedState(url,produtionOrder);
                 return produtionOrder;
             }
             return null;
@@ -87,6 +88,7 @@ namespace productionorderservice.Services
                         .Where(x => x.state == newState.ToString()).FirstOrDefault().url;
 
                 produtionOrder.currentStatus = newState.ToString();
+                produtionOrder.latestUpdate = DateTime.Now.Ticks;
                 _context.Entry(produtionOrder).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 

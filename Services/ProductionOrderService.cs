@@ -33,6 +33,7 @@ namespace productionorderservice.Services
                 return null;
             productionOrder.recipe = recipe;
             productionOrder.currentStatus = null;
+            productionOrder.latestUpdate = DateTime.Now.Ticks;
             _context.ProductionOrders.Add(productionOrder);
             await _context.SaveChangesAsync();
             return productionOrder;
@@ -132,7 +133,7 @@ namespace productionorderservice.Services
                 return null;
             }
             productioOrderDb.currentThingId = thingId;
-
+            productioOrderDb.latestUpdate = DateTime.Now.Ticks;
             _context.ProductionOrders.Update(productioOrderDb);
             await _context.SaveChangesAsync();
             return productioOrderDb;
@@ -213,8 +214,5 @@ namespace productionorderservice.Services
             }
             return queryProducts;
         }
-
-
-
     }
 }
