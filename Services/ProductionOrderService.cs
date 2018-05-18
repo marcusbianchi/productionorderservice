@@ -85,7 +85,9 @@ namespace productionorderservice.Services
         public async Task<(List<ProductionOrder>, int)> getProductionOrders(int startat, int quantity
         , List<string> fields,ProductionOrderFields orderField, OrderEnum order)
         {
-            var productionOrdersQuery = _context.ProductionOrders.Where(x => x.currentStatus != stateEnum.inactive.ToString());
+            var productionOrdersQuery = _context.ProductionOrders
+                                        .Where(x => x.currentStatus != stateEnum.inactive.ToString())
+                                        .OrderByDescending(x => x.latestUpdate).AsQueryable();
             foreach (var field in fields)
             {
                 string fieldValue = string.Empty;
@@ -209,7 +211,9 @@ namespace productionorderservice.Services
                         queryProducts = queryProducts.OrderByDescending(x => x.productionOrderNumber);
                     break;
                 default:
-                    queryProducts = queryProducts.OrderBy(x => x.productionOrderNumber);
+                    queryProducts = queryProducts
+                                                .OrderByDescending(x => x.latestUpdate)
+                                                .ThenBy(x => x.productionOrderNumber);
                     break;
             }
             return queryProducts;
