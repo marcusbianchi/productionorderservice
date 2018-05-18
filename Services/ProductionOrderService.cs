@@ -54,6 +54,16 @@ namespace productionorderservice.Services
         public async Task<ProductionOrder> getProductionOrder(int productionOrderId)
         {
             var productionOrder = await _context.ProductionOrders
+                                        .Include(x => x.recipe)
+                                        .Include(x => x.recipe.phases)
+                                        .Include(x => x.recipe.recipeProduct)
+                                        .Include(x => x.recipe.recipeProduct.product)
+                                        .Include("recipe.phases.phaseProducts")
+                                        .Include("recipe.phases.phaseParameters")
+                                        .Include("recipe.phases.phaseParameters.tag")
+                                        .Include("recipe.phases.phaseParameters.tag.thingGroup")
+                                        .Include("recipe.phases.phaseParameters.tag.thingGroup.things")
+                                        .Include("recipe.phases.phaseProducts.product")
                                         .Where(x => x.productionOrderId == productionOrderId)
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync();
