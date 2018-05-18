@@ -11,63 +11,55 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using productionorderservice.Model;
 using productionorderservice.Services.Interfaces;
+using securityfilter;
 
-namespace productionorderservice.Controllers
-{
-    [Route("api/[controller]")]
-    public class ProductionOrdersHistStatesController : Controller
-    {
+namespace productionorderservice.Controllers {
+    [Route ("api/[controller]")]
+    public class ProductionOrdersHistStatesController : Controller {
         private readonly IHistStateService _histStatesService;
 
-        public ProductionOrdersHistStatesController(IHistStateService histStatesService)
-        {
+        public ProductionOrdersHistStatesController (IHistStateService histStatesService) {
             _histStatesService = histStatesService;
-        } 
-
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]int productionOrderId)
-        {
-            if(productionOrderId > 0)
-            {
-                var histStates = await _histStatesService.getHistStates(productionOrderId);
-
-                if(histStates != null)
-                {
-                    return Ok(histStates);
-                }
-            }
-            return NotFound();
         }
 
-        [HttpGet("productionOrderList")]
-        public async Task<IActionResult> Get([FromQuery]string statusSearch, [FromQuery]long startDate, [FromQuery]long endDate)
-        {
-            if(!string.IsNullOrEmpty(statusSearch))
-            {
-                var productionOrderIds = await _histStatesService.getHistStatesPerStatusAndDate(statusSearch,startDate,endDate);
+        [HttpGet]
+        [SecurityFilter ("production_order__allow_read")]
+        public async Task<IActionResult> Get ([FromQuery] int productionOrderId) {
+            if (productionOrderId > 0) {
+                var histStates = await _histStatesService.getHistStates (productionOrderId);
 
-                if(productionOrderIds.Count() != 0)
-                {
-                    return Ok(productionOrderIds);
+                if (histStates != null) {
+                    return Ok (histStates);
                 }
             }
-            return NotFound();
+            return NotFound ();
+        }
+
+        [HttpGet ("productionOrderList")]
+        [SecurityFilter ("production_order__allow_read")]
+        public async Task<IActionResult> Get ([FromQuery] string statusSearch, [FromQuery] long startDate, [FromQuery] long endDate) {
+            if (!string.IsNullOrEmpty (statusSearch)) {
+                var productionOrderIds = await _histStatesService.getHistStatesPerStatusAndDate (statusSearch, startDate, endDate);
+
+                if (productionOrderIds.Count () != 0) {
+                    return Ok (productionOrderIds);
+                }
+            }
+            return NotFound ();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromQuery] int productionOrderId,[FromQuery]string state)
-        {
-            if(productionOrderId>0)
-            {
-                var histstate = await _histStatesService.addHistStates(productionOrderId,state);
-                if(histstate == null)
-                {
-                    return StatusCode(500);
+        [SecurityFilter ("production_order__allow_update")]
+        public async Task<IActionResult> Post ([FromQuery] int productionOrderId, [FromQuery] string state) {
+            if (productionOrderId > 0) {
+                var histstate = await _histStatesService.addHistStates (productionOrderId, state);
+                if (histstate == null) {
+                    return StatusCode (500);
                 }
-                return Created($"api/ProductionOrdersHistStates/{histstate.histStatesId}", histstate);
+                return Created ($"api/ProductionOrdersHistStates/{histstate.histStatesId}", histstate);
             }
-            return BadRequest("ProductionOrderId invalid");
+            return BadRequest ("ProductionOrderId invalid");
         }
-        
+
     }
 }

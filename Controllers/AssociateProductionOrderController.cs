@@ -12,43 +12,39 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using productionorderservice.Model;
 using productionorderservice.Services.Interfaces;
+using securityfilter;
 
-namespace productionorderservice.Controllers
-{
-    [Route("api/productionorders/[controller]")]
-    public class AssociateProductionOrderController : Controller
-    {
+namespace productionorderservice.Controllers {
+    [Route ("api/productionorders/[controller]")]
+    public class AssociateProductionOrderController : Controller {
         private readonly IAssociateProductionOrderService _associateProductionOrderService;
-        public AssociateProductionOrderController(IAssociateProductionOrderService associateProductionOrderService)
-        {
+        public AssociateProductionOrderController (IAssociateProductionOrderService associateProductionOrderService) {
             _associateProductionOrderService = associateProductionOrderService;
         }
 
-        [HttpPut("associate/")]
-        [Produces("application/json")]
-        public async Task<IActionResult> GetGroups([FromQuery]int thingId, [FromQuery]int productionOrderId)
-        {
+        [HttpPut ("associate/")]
+        [Produces ("application/json")]
+        [SecurityFilter ("production_order__allow_update")]
+        public async Task<IActionResult> GetGroups ([FromQuery] int thingId, [FromQuery] int productionOrderId) {
 
-            var (PO, result) = await _associateProductionOrderService.AssociateProductionOrder(thingId, productionOrderId);
+            var (PO, result) = await _associateProductionOrderService.AssociateProductionOrder (thingId, productionOrderId);
             if (PO == null)
-                return BadRequest(result);
-            return Ok(PO);
+                return BadRequest (result);
+            return Ok (PO);
         }
 
-        [HttpPut("disassociate/")]
-        [Produces("application/json")]
-        public async Task<IActionResult> Disassociate([FromBody]ProductionOrder productionOrder)
-        {
-            if (ModelState.IsValid)
-            {
-                var (PO, result) = await _associateProductionOrderService.DisassociateProductionOrder(productionOrder);
+        [HttpPut ("disassociate/")]
+        [Produces ("application/json")]
+        [SecurityFilter ("production_order__allow_update")]
+        public async Task<IActionResult> Disassociate ([FromBody] ProductionOrder productionOrder) {
+            if (ModelState.IsValid) {
+                var (PO, result) = await _associateProductionOrderService.DisassociateProductionOrder (productionOrder);
                 if (PO == null)
-                    return BadRequest(result);
-                return Ok(PO);
+                    return BadRequest (result);
+                return Ok (PO);
             }
-            return BadRequest(ModelState);
+            return BadRequest (ModelState);
         }
-
 
     }
 }
