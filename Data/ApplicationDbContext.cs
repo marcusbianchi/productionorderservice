@@ -30,7 +30,7 @@ namespace productionorderservice.Data
                 .HasIndex(b => b.productionOrderNumber);
             modelBuilder.Entity<ProductionOrder>()
             .Property(b => b.currentStatus)
-            .HasDefaultValue("created");
+            .HasDefaultValue("created");            
         }
     }
 }

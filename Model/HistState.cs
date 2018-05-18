@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace productionorderservice.Model
 {
-    public class HistState
+    public class HistState 
     {
         [Key]
         public int histStatesId{get;set;}
