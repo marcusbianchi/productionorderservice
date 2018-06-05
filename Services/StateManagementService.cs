@@ -42,12 +42,7 @@ namespace productionorderservice.Services
                         .Include(x => x.stateConfiguration)
                         .ThenInclude(x => x.states)
                         .FirstOrDefaultAsync();
-            var curState = productionOrderType.stateConfiguration.states
-                        .Where(x => x.state == produtionOrder.currentStatus.ToString()).FirstOrDefault();
-            if (curState == null)
-                return null;
-            if (curState.possibleNextStates.Contains(newState.ToString()))
-            {
+        
                  string url = productionOrderType.stateConfiguration.states
                         .Where(x => x.state == newState.ToString()).FirstOrDefault().url;
                         
@@ -61,8 +56,7 @@ namespace productionorderservice.Services
                 if(!string.IsNullOrEmpty(url))
                     postAfterChangedState(url,produtionOrder);
                 return produtionOrder;
-            }
-            return null;
+         
 
         }
 
