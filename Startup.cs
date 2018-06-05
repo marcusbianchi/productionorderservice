@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +38,11 @@ namespace productionorderservice
                           .AllowAnyMethod()
                           .AllowAnyHeader();
                }));
+               
+            if (!String.IsNullOrEmpty (Configuration["KeyFolder"]))
+                services.AddDataProtection ()
+                .SetApplicationName ("Lorien")
+                .PersistKeysToFileSystem (new DirectoryInfo (Configuration["KeyFolder"]));
             services.AddSingleton<IRecipePhaseService, RecipePhaseService>();
             services.AddSingleton<IRecipeService, RecipeService>();
             services.AddSingleton<IThingService, ThingService>();
