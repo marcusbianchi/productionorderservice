@@ -66,8 +66,8 @@ namespace productionorderservice.Services {
             var PODB = await _productionOrderService.getProductionOrder (productionOrder.productionOrderId);
             if (PODB == null)
                 return (null, "Production Order Not Found");
-            if (PODB.currentStatus != stateEnum.active.ToString ())
-                return (null, "Production Order Not Active");
+            if(PODB.currentStatus != stateEnum.ended.ToString ())
+                return (null, "Production Order Not Ended");
             var POType = await _productionOrderTypeService.getProductionOrderType (productionOrder.productionOrderTypeId.Value);
             if (POType == null)
                 return (null, "Production Order Type Not Found");
