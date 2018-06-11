@@ -6,7 +6,7 @@ namespace productionorderservice.Services.Interfaces
 {
     public interface IStateManagementService
     {
-        Task<ProductionOrder> setProductionOrderToStatusById(int productionOrderId, stateEnum newState);
+        Task<ProductionOrder> setProductionOrderToStatusById(int productionOrderId, stateEnum newState, ProductionOrder productionOrder);
         Task<ProductionOrder> setProductionOrderToStatusByNumber(string productionOrderNumber, stateEnum newState);
 
     }

@@ -10,5 +10,7 @@ namespace productionorderservice.Model
         public int productionOrderId{get;set;}
         public string state{get;set;}
         public long date {get;set;}
+        public string username{get;set;}
+
     }
 }

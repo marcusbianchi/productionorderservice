@@ -30,11 +30,15 @@ namespace productionorderservice.Services
             _histStateService = histStateService;
             client = new HttpClient();
         }
-        public async Task<ProductionOrder> setProductionOrderToStatusById(int productionOrderId, stateEnum newState)
+        public async Task<ProductionOrder> setProductionOrderToStatusById(int productionOrderId, stateEnum newState,ProductionOrder productionOrder)
         {
-            var produtionOrder = await _context.ProductionOrders
-                        .Where(x => x.productionOrderId == productionOrderId)
-                        .FirstOrDefaultAsync();
+            // var produtionOrder = await _context.ProductionOrders
+            //             .Where(x => x.productionOrderId == productionOrderId)
+            //             .FirstOrDefaultAsync();
+            
+            //alteração feita para a mudança de status gravar tbm o nome do usuário
+            var produtionOrder = productionOrder;
+
             if (produtionOrder == null)
                 return null;
             var productionOrderType = await _context.ProductionOrderTypes
