@@ -50,9 +50,9 @@ namespace productionorderservice.Controllers {
 
         [HttpPost]
         [SecurityFilter ("production_order__allow_update")]
-        public async Task<IActionResult> Post ([FromQuery] int productionOrderId, [FromQuery] string state) {
+        public async Task<IActionResult> Post ([FromQuery] int productionOrderId, [FromQuery] string state, [FromQuery]string username) {
             if (productionOrderId > 0) {
-                var histstate = await _histStatesService.addHistStates (productionOrderId, state);
+                var histstate = await _histStatesService.addHistStates (productionOrderId, state, username);
                 if (histstate == null) {
                     return StatusCode (500);
                 }
