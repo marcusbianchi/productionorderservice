@@ -54,6 +54,12 @@ namespace productionorderservice.Controllers {
             return Ok (new { values = productionOrders, total = total });
         }
 
+        public async Task<IActionResult> Get ([FromQuery] List<int> filters) {
+            
+            return Ok ();
+        }
+
+
         [HttpGet ("{id}")]
         [SecurityFilter ("production_order__allow_read")]
         public async Task<IActionResult> Get (int id) {
