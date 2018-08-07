@@ -13,6 +13,7 @@ namespace productionorderservice.Services.Interfaces
         Task<bool> checkProductionOrderType(int productionOrderTypeId);
         Task<ProductionOrder> setProductionOrderToThing(ProductionOrder productioOrder, int? thingId);
         Task<ProductionOrder> getProductionOrderOnThing(int thingId);
+        Task<List<ProductionOrder>> getProductionOrderIds(List<int> ids);
 
     }
 

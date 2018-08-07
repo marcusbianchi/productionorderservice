@@ -51,8 +51,8 @@ namespace productionorderservice.Services
             return productionOrdertype != null;
         }
 
-        public async Task<ProductionOrder> getProductionOrder(int productionOrderId)
-        {
+        public async Task<ProductionOrder> getProductionOrder(int productionOrderId){
+
             var productionOrder = await _context.ProductionOrders
                                         .Include(x => x.recipe)
                                         .Include(x => x.recipe.phases)
@@ -88,8 +88,7 @@ namespace productionorderservice.Services
             var productionOrdersQuery = _context.ProductionOrders
                                         .Where(x => x.currentStatus != stateEnum.inactive.ToString())
                                         .OrderByDescending(x => x.latestUpdate).AsQueryable();
-            foreach (var field in fields)
-            {
+            foreach (var field in fields){
                 string fieldValue = string.Empty;
                 var fieldSplit = field.Split(",");
                 if(fieldSplit.Count()>1)
@@ -126,6 +125,25 @@ namespace productionorderservice.Services
 
             return (result, totalCount);
         }
+
+        public async Task<List<ProductionOrder>> getProductionOrderIds(List<int> ids){                
+            var productionOrders = await _context.ProductionOrders
+                                        .Include(x => x.recipe)
+                                        .Include(x => x.recipe.phases)
+                                        .Include(x => x.recipe.recipeProduct)
+                                        .Include(x => x.recipe.recipeProduct.product)
+                                        .Include("recipe.phases.phaseProducts")
+                                        .Include("recipe.phases.phaseParameters")
+                                        .Include("recipe.phases.phaseParameters.tag")
+                                        .Include("recipe.phases.phaseParameters.tag.thingGroup")
+                                        .Include("recipe.phases.phaseParameters.tag.thingGroup.things")
+                                        .Include("recipe.phases.phaseProducts.product")
+                                        .Where(x => ids.Contains((int)x.productionOrderId))
+                                        .AsNoTracking().ToListAsync();                                                                                                                   
+            return productionOrders;                                    
+        }
+
+
 
         public async Task<ProductionOrder> setProductionOrderToThing(ProductionOrder productioOrder, int? thingId)
         {
