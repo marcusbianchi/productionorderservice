@@ -42,7 +42,7 @@ namespace productionorderservice.Controllers {
         [HttpGet ("v2")]
         [ResponseCache (CacheProfileName = "productionordercache")]
         [SecurityFilter ("production_order__allow_read")]
-        public async Task<IActionResult> Get ([FromQuery] int startat, [FromQuery] int quantity, [FromQuery] List<string> filters, [FromQuery] string orderField, [FromQuery] string order) {
+        public async Task<IActionResult> Get([FromQuery] int startat, [FromQuery] int quantity, [FromQuery] List<string> filters, [FromQuery] string orderField, [FromQuery] string order) {
             var orderFieldEnum = ProductionOrderFields.Default;
             Enum.TryParse (orderField, true, out orderFieldEnum);
             var orderEnumValue = OrderEnum.Ascending;
@@ -53,6 +53,14 @@ namespace productionorderservice.Controllers {
                 filters, orderFieldEnum, orderEnumValue);
             return Ok (new { values = productionOrders, total = total });
         }
+        
+
+        [HttpGet("ids")]
+        public async Task<IActionResult> Get([FromQuery] string ids) {            
+            List<int> nums = ids.Split(",").Select(int.Parse).ToList();                                                                                        
+            return Ok(await _productionOrderService.getProductionOrderIds(nums));
+        }
+
 
         [HttpGet ("{id}")]
         [SecurityFilter ("production_order__allow_read")]
@@ -62,6 +70,7 @@ namespace productionorderservice.Controllers {
                 return NotFound ();
             return Ok (productionOrder);
         }
+
 
         [HttpGet ("thing/{thingid}")]
         [SecurityFilter ("production_order__allow_read")]
