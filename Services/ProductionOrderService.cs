@@ -110,7 +110,7 @@ namespace productionorderservice.Services
                 var fieldSplit = field.Split(",");
                 if(fieldSplit.Count()>1)
                     fieldValue = fieldSplit[1];
-
+                
                 var fieldFilterEnum = ProductionOrderFields.Default;
                 Enum.TryParse(fieldSplit[0], true, out fieldFilterEnum);
                 queryCount = ApplyFilter(queryCount, fieldFilterEnum, fieldValue);
@@ -138,7 +138,7 @@ namespace productionorderservice.Services
                                         .Include("recipe.phases.phaseParameters.tag.thingGroup")
                                         .Include("recipe.phases.phaseParameters.tag.thingGroup.things")
                                         .Include("recipe.phases.phaseProducts.product")
-                                        .Where(x => ids.Contains((int)x.productionOrderId))
+                                        .Where(x => ids.Contains((int)x.productionOrderId) && x.productionOrderTypeId == 1)
                                         .AsNoTracking().ToListAsync();                                                                                                                   
             return productionOrders;                                    
         }
