@@ -19,7 +19,8 @@ namespace productionorderservice.Model
         public string typeDescription { get; set; }
         public long latestUpdate{ get; set; }
         public int? quantity { get; set; }
-        public string currentStatus { get; set; }
+        public string currentStatus { get; set; }        
+        [NotMapped]
         public string username { get; set; }
         public int? currentThingId { get; set; }
         [NotMapped]

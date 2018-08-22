@@ -34,21 +34,18 @@ namespace productionorderservice.Services {
             //alteração feita para a mudança de status gravar tbm o nome do usuário
 
             Console.WriteLine ("produtionOrder - from Service: ");
-            Console.WriteLine (produtionOrder.ToString ());
+            //Console.WriteLine (produtionOrder.currentStatus);
 
             if (produtionOrder == null)
                 return null;
-            var productionOrderType = await _context.ProductionOrderTypes
-                .Where (x => x.productionOrderTypeId == produtionOrder.productionOrderTypeId)
-                .Include (x => x.stateConfiguration)
-                .ThenInclude (x => x.states)
-                .FirstOrDefaultAsync ();
+            var productionOrderType = await _context.ProductionOrderTypes.Where(x => x.productionOrderTypeId == produtionOrder.productionOrderTypeId).Include(x => x.stateConfiguration).ThenInclude(x => x.states).FirstOrDefaultAsync();
 
-            string url = productionOrderType.stateConfiguration.states
-                .Where (x => x.state == newState.ToString ()).FirstOrDefault ().url;
-
+            string url = productionOrderType.stateConfiguration.states.Where(x => x.state == newState.ToString()).FirstOrDefault().url;
+            Console.WriteLine(url);
             produtionOrder.currentStatus = newState.ToString ();
             produtionOrder.latestUpdate = DateTime.Now.Ticks;
+
+
             if (username != null) {
                 produtionOrder.username = username;
             } else {
