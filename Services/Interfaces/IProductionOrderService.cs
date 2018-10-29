@@ -22,6 +22,7 @@ namespace productionorderservice.Services.Interfaces
         Default,
         productionOrderNumber,
         currentStatus,
-        productionOrderTypeId
+        productionOrderTypeId,
+        productionOrderRecipeCode
     }
 }

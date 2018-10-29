@@ -205,6 +205,9 @@ namespace productionorderservice.Services
                 case ProductionOrderFields.productionOrderTypeId:
                     queryProducts = queryProducts.Where(x => x.productionOrderTypeId.ToString().Contains(fieldValue));
                     break;
+                case ProductionOrderFields.productionOrderRecipeCode:
+                    queryProducts = queryProducts.Where(x => x.recipe.recipeCode.ToString().Contains(fieldValue));
+                    break;
                 default:
                     break;
             }
