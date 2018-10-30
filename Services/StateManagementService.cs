@@ -26,10 +26,11 @@ namespace productionorderservice.Services {
             _histStateService = histStateService;
             client = new HttpClient ();
         }
-        public async Task<ProductionOrder> setProductionOrderToStatusById (int productionOrderId, stateEnum newState, string username) {
+        public async Task<ProductionOrder> setProductionOrderToStatusById (int productionOrderId, stateEnum newState, string username,double? quantForno) {
             var produtionOrder = await _context.ProductionOrders
                 .Where (x => x.productionOrderId == productionOrderId)
                 .FirstOrDefaultAsync ();
+
 
             //alteração feita para a mudança de status gravar tbm o nome do usuário
 
@@ -38,6 +39,11 @@ namespace productionorderservice.Services {
 
             if (produtionOrder == null)
                 return null;
+
+            
+            if(quantForno != null)
+                produtionOrder.quantForno = quantForno.Value;
+                
             var productionOrderType = await _context.ProductionOrderTypes.Where(x => x.productionOrderTypeId == produtionOrder.productionOrderTypeId).Include(x => x.stateConfiguration).ThenInclude(x => x.states).FirstOrDefaultAsync();
 
             string url = productionOrderType.stateConfiguration.states.Where(x => x.state == newState.ToString()).FirstOrDefault().url;

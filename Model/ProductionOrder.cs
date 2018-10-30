@@ -25,5 +25,7 @@ namespace productionorderservice.Model
         public int? currentThingId { get; set; }
         [NotMapped]
         public Thing currentThing { get; set; }
+        [NotMapped]
+        public double quantForno { get; set; }
     }
 }

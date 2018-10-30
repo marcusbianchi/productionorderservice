@@ -25,7 +25,7 @@ namespace productionorderservice.Controllers {
 
         [HttpPut ("id/")]
         [SecurityFilter ("production_order__allow_update")]
-        public async Task<IActionResult> UpdateById ([FromQuery] int productionorderid, [FromQuery] string state,[FromQuery] string username) {
+        public async Task<IActionResult> UpdateById ([FromQuery] int productionorderid, [FromQuery] string state,[FromQuery] string username,[FromQuery] double? quantForno) {
 
             Console.WriteLine("username: ");
             if(username != null)
@@ -35,7 +35,7 @@ namespace productionorderservice.Controllers {
             if (!Enum.TryParse (state, out newState))
                 return BadRequest ("State Not Found");
 
-            var productionOrders = await _stateManagementService.setProductionOrderToStatusById (productionorderid, newState,username);
+            var productionOrders = await _stateManagementService.setProductionOrderToStatusById (productionorderid, newState,username, quantForno);
             if (productionOrders == null)
                 return BadRequest ("State Change not Allowed By Configuration");
             return Ok (productionOrders);
